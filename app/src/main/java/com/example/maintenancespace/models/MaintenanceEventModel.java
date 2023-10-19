@@ -10,9 +10,9 @@ public class MaintenanceEventModel {
     private float mileage;
     private LocalDateTime date;
     private MaintenanceEventStatus status;
-    private int receipt;
+    private int receiptId;
 
-    public MaintenanceEventModel(int id, int carId, String name, String description, float mileage, LocalDateTime date, MaintenanceEventStatus status, int receipt) {
+    public MaintenanceEventModel(int id, int carId, String name, String description, float mileage, LocalDateTime date, MaintenanceEventStatus status, int receiptId) {
         this.id = id;
         this.cardId = carId;
         this.name = name;
@@ -20,6 +20,38 @@ public class MaintenanceEventModel {
         this.mileage = mileage;
         this.date = date;
         this.status = status;
-        this.receipt = receipt;
+        this.receiptId = receiptId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getCardId() {
+        return cardId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public float getMileage() {
+        return mileage;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public MaintenanceEventStatus getStatus() {
+        return status;
+    }
+
+    public int getReceiptId() {
+        return receiptId;
     }
 }
