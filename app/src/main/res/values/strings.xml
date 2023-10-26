@@ -3,4 +3,9 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="maintenance_event_name">Event Name</string>
+    <string name="maintenance_event_description">Event Description</string>
+    <string name="maintenance_event_due">Due</string>
+    <string name="maintenance_event_date">1/1/2024</string>
+    <string name="maintenance_event_time">12:00pm</string>
 </resources>
