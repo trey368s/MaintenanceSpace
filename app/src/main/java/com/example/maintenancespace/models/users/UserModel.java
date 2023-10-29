@@ -6,7 +6,7 @@ public class UserModel {
     private String lastName;
 
 
-    public UserModel(int userId, String firstName, String lastName)
+    public UserModel()
     {
         this.userId = userId;
         this.firstName = firstName;
