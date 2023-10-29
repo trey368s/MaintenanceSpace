@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class MaintenanceEventModel {
     private int id;
-    private int cardId;
+    private int carId;
     private String name;
     private String description;
     private float mileage;
@@ -14,7 +14,7 @@ public class MaintenanceEventModel {
 
     public MaintenanceEventModel(int id, int carId, String name, String description, float mileage, LocalDateTime date, MaintenanceEventStatus status, int receiptId) {
         this.id = id;
-        this.cardId = carId;
+        this.carId = carId;
         this.name = name;
         this.description = description;
         this.mileage = mileage;
@@ -27,8 +27,8 @@ public class MaintenanceEventModel {
         return id;
     }
 
-    public int getCardId() {
-        return cardId;
+    public int getCarId() {
+        return carId;
     }
 
     public String getName() {
