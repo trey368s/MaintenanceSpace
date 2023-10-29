@@ -1,16 +1,16 @@
-package com.example.maintenancespace.ui.home;
+package com.example.maintenancespace.ui.events;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class EventViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public EventViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is a car fragment");
+        mText.setValue("This is an event fragment");
     }
 
     public LiveData<String> getText() {

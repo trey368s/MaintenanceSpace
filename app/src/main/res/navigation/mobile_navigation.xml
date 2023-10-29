@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_cars"
-        android:name="com.example.maintenancespace.ui.home.HomeFragment"
+        android:name="com.example.maintenancespace.ui.cars.CarFragment"
         android:label="@string/title_cars"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_car" />
 
     <fragment
         android:id="@+id/navigation_events"
-        android:name="com.example.maintenancespace.ui.dashboard.DashboardFragment"
+        android:name="com.example.maintenancespace.ui.events.EventFragment"
         android:label="@string/title_events"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_event" />
 
     <fragment
         android:id="@+id/navigation_reports"
-        android:name="com.example.maintenancespace.ui.notifications.NotificationsFragment"
+        android:name="com.example.maintenancespace.ui.reports.ReportFragment"
         android:label="@string/title_reports"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_report" />
 </navigation>

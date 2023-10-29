@@ -1,4 +1,4 @@
-package com.example.maintenancespace.ui.home;
+package com.example.maintenancespace.ui.reports;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.maintenancespace.databinding.FragmentHomeBinding;
+import com.example.maintenancespace.databinding.FragmentReportBinding;
 
-public class HomeFragment extends Fragment {
+public class ReportFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentReportBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        ReportViewModel reportViewModel =
+                new ViewModelProvider(this).get(ReportViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textReport;
+        reportViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
