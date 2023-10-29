@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_cars">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.maintenancespace.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_cars"
+        android:name="com.example.maintenancespace.ui.cars.CarFragment"
+        android:label="@string/title_cars"
+        tools:layout="@layout/fragment_car" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.maintenancespace.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_events"
+        android:name="com.example.maintenancespace.ui.events.EventFragment"
+        android:label="@string/title_events"
+        tools:layout="@layout/fragment_event" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.maintenancespace.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_reports"
+        android:name="com.example.maintenancespace.ui.reports.ReportFragment"
+        android:label="@string/title_reports"
+        tools:layout="@layout/fragment_report" />
 </navigation>
