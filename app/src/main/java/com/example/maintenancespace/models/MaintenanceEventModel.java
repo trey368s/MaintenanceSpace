@@ -23,6 +23,17 @@ public class MaintenanceEventModel {
         this.receiptId = receiptId;
     }
 
+    public MaintenanceEventModel(int id, int carId, String name, String description, float mileage, LocalDateTime date, MaintenanceEventStatus status) {
+        this.id = id;
+        this.carId = carId;
+        this.name = name;
+        this.description = description;
+        this.mileage = mileage;
+        this.date = date;
+        this.status = status;
+    }
+
+
     public int getId() {
         return id;
     }
