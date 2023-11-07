@@ -7,14 +7,16 @@ public class CarModel {
     private String model;
     private String trim;
     private int year;
+    private String ownerId;
 
-    public CarModel(int id, String vin, String make, String model, String trim, int year){
+    public CarModel(int id, String vin, String make, String model, String trim, int year, String ownerId){
         this.id = id;
         this.vin = vin;
         this.make = make;
         this.model = model;
         this.trim = trim;
         this.year = year;
+        this.ownerId = ownerId;
     }
 
     public int getId(){
@@ -39,5 +41,9 @@ public class CarModel {
 
     public int getYear(){
         return year;
+    }
+
+    public String getOwnerId(){
+        return ownerId;
     }
 }

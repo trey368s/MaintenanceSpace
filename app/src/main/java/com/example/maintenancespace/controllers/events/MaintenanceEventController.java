@@ -1,7 +1,7 @@
-package com.example.maintenancespace.controllers;
+package com.example.maintenancespace.controllers.events;
 
-import com.example.maintenancespace.models.MaintenanceEventModel;
-import com.example.maintenancespace.models.MaintenanceEventStatus;
+import com.example.maintenancespace.models.events.MaintenanceEventModel;
+import com.example.maintenancespace.models.events.MaintenanceEventStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
