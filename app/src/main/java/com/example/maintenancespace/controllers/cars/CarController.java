@@ -1,31 +1,103 @@
 package com.example.maintenancespace.controllers.cars;
 
 import com.example.maintenancespace.models.cars.CarModel;
-import com.example.maintenancespace.models.users.UserModel;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CarController {
-    public static CarModel fetchById(int carId){
-        return new CarModel(carId, "VIN12345", "Tesla", "Model 3", "Silver", 2023, "1");
+    private static FirebaseFirestore firestore;
+
+    public CarController(FirebaseFirestore firestore) {
+        this.firestore = firestore;
     }
 
-    public static ArrayList<CarModel> fetchAllCarsByUser(String userId){
-        CarModel car = new CarModel(1,"VIN12345", "Tesla", "Model 3", "Silver", 2023, userId);
-        ArrayList<CarModel> cars = new ArrayList<>();
-        cars.add(car);
-        return cars;
+    public interface CarListener {
+        void onCarFetched(CarModel car);
+        void onCarsFetched(ArrayList<CarModel> cars);
+        void onCreation(String docId);
+        void onDelete(String docId);
+        void onUpdate(String docId);
+        void onFailure(Exception e);
     }
 
-    public static boolean deleteById(int carId) {
-        return true;
+    public void fetchCarById(String carId, CarListener listener){
+        firestore.collection("Car").document(carId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        CarModel car = documentSnapshot.toObject(CarModel.class);
+                        listener.onCarFetched(car);
+                    } else {
+                        listener.onFailure(new Exception("Car not found"));
+                    }
+                })
+                .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public static CarModel createByUserId(String vin, String make, String model, String trim, int year, String ownerId) {
-        return new CarModel(1, vin, make, model, trim, year, ownerId);
+    public void fetchAllCarsByUserId(String userId, CarListener listener) {
+        firestore.collection("Car")
+                .whereArrayContains("userIds", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    ArrayList<CarModel> cars = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        CarModel car = document.toObject(CarModel.class);
+                        cars.add(car);
+                    }
+                    listener.onCarsFetched(cars);
+                })
+                .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public static CarModel updateById(int carId, String vin, String make, String model, String trim, int year, String ownerId) {
-        return new CarModel(carId, vin, make, model, trim, year, ownerId);
+    public void createCarByUserId(String vin, String make, String model, String trim, int year, String ownerId, CarListener listener) {
+        ArrayList<String> userIds = new ArrayList<>();
+        userIds.add(ownerId);
+        CarModel car = new CarModel(vin, make, model, trim, year, ownerId, userIds);
+        firestore.collection("Car")
+                .add(car)
+                .addOnSuccessListener(documentReference -> {
+                    String docId = documentReference.getId();
+                    listener.onCreation(docId);
+                })
+                .addOnFailureListener(e -> listener.onFailure(e));
     }
+
+
+    public void deleteCarById(String carId, CarListener listener) {
+        firestore.collection("Car")
+                .document(carId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    listener.onDelete(carId);
+                })
+                .addOnFailureListener(e -> {
+                    listener.onFailure(e);
+                });
+    }
+
+    public void updateCarById(String carId, CarModel updatedCar, CarListener listener) {
+        Map<String, Object> updatedData = new HashMap<>();
+        updatedData.put("vin", updatedCar.getVin());
+        updatedData.put("make", updatedCar.getMake());
+        updatedData.put("model", updatedCar.getModel());
+        updatedData.put("trim", updatedCar.getTrim());
+        updatedData.put("year", updatedCar.getYear());
+        updatedData.put("ownerId", updatedCar.getOwnerId());
+        updatedData.put("userIds", updatedCar.getUserIds());
+
+        firestore.collection("Car")
+                .document(carId)
+                .set(updatedData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    listener.onUpdate(carId);
+                })
+                .addOnFailureListener(e -> {
+                    listener.onFailure(e);
+                });
+    }
+
 }
