@@ -1,4 +1,4 @@
-package com.example.maintenancespace.models;
+package com.example.maintenancespace.models.events;
 
 public enum MaintenanceEventStatus {
     COMPLETED,

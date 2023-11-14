@@ -1,4 +1,4 @@
-package com.example.maintenancespace.models;
+package com.example.maintenancespace.models.events;
 
 import java.time.LocalDateTime;
 
