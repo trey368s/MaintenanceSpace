@@ -1,18 +1,20 @@
 package com.example.maintenancespace.models.events;
 
-import java.time.LocalDateTime;
+import com.google.firebase.Timestamp;
 
 public class MaintenanceEventModel {
-    private int id;
-    private int carId;
+    private String id;
+    private String carId;
     private String name;
     private String description;
     private float mileage;
-    private LocalDateTime date;
+    private Timestamp date;
     private MaintenanceEventStatus status;
     private int receiptId;
 
-    public MaintenanceEventModel(int id, int carId, String name, String description, float mileage, LocalDateTime date, MaintenanceEventStatus status, int receiptId) {
+    public MaintenanceEventModel() {}
+
+    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status, int receiptId) {
         this.id = id;
         this.carId = carId;
         this.name = name;
@@ -23,7 +25,7 @@ public class MaintenanceEventModel {
         this.receiptId = receiptId;
     }
 
-    public MaintenanceEventModel(int id, int carId, String name, String description, float mileage, LocalDateTime date, MaintenanceEventStatus status) {
+    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
         this.id = id;
         this.carId = carId;
         this.name = name;
@@ -33,12 +35,27 @@ public class MaintenanceEventModel {
         this.status = status;
     }
 
+    public MaintenanceEventModel(String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
+        this.carId = carId;
+        this.name = name;
+        this.description = description;
+        this.mileage = mileage;
+        this.date = date;
+        this.status = status;
+    }
 
-    public int getId() {
+    public MaintenanceEventModel(String name, String description, Timestamp date) {
+        this.name = name;
+        this.description = description;
+        this.date = date;
+    }
+
+
+    public String getId() {
         return id;
     }
 
-    public int getCarId() {
+    public String getCarId() {
         return carId;
     }
 
@@ -54,7 +71,7 @@ public class MaintenanceEventModel {
         return mileage;
     }
 
-    public LocalDateTime getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
