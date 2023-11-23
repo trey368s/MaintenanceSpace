@@ -1,10 +1,12 @@
 package com.example.maintenancespace.ui.events;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -13,10 +15,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.maintenancespace.MainActivity;
+import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.databinding.FragmentEventBinding;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -30,6 +35,11 @@ public class EventFragment extends Fragment {
         binding = FragmentEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         final FragmentManager fragmentManager = getChildFragmentManager();
+        FloatingActionButton addEventButton = root.findViewById(R.id.addMaintenanceEvent);
+        addEventButton.setOnClickListener(v -> {
+            Intent switchActivity = new Intent(getActivity(), NewMaintenanceEventActivity.class);
+            startActivity(switchActivity);
+        });
 
         if(savedInstanceState == null) {
             MaintenanceEventController.fetchAllByUserId("rjdx2qXKhhZTxwZBssB0N37hrPD2", new MaintenanceEventController.MaintenanceEventListener() {
