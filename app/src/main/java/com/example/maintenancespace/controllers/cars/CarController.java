@@ -1,6 +1,7 @@
 package com.example.maintenancespace.controllers.cars;
 
 import com.example.maintenancespace.models.cars.CarModel;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -10,11 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CarController {
-    private static FirebaseFirestore firestore;
 
-    public CarController(FirebaseFirestore firestore) {
-        this.firestore = firestore;
-    }
+    private static FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     public interface CarListener {
         void onCarFetched(CarModel car);
@@ -25,7 +23,7 @@ public class CarController {
         void onFailure(Exception e);
     }
 
-    public void fetchCarById(String carId, CarListener listener){
+    public static void fetchCarById(String carId, CarListener listener){
         firestore.collection("Car").document(carId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -38,13 +36,13 @@ public class CarController {
                 .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public void fetchAllCarsByUserId(String userId, CarListener listener) {
+    public static void fetchAllCarsByUserId(String userId, CarListener listener) {
         firestore.collection("Car")
                 .whereArrayContains("userIds", userId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     ArrayList<CarModel> cars = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                         CarModel car = document.toObject(CarModel.class);
                         cars.add(car);
                     }
@@ -53,7 +51,7 @@ public class CarController {
                 .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public void createCarByUserId(String vin, String make, String model, String trim, int year, String ownerId, CarListener listener) {
+    public static void createCarByUserId(String vin, String make, String model, String trim, int year, String ownerId, CarListener listener) {
         ArrayList<String> userIds = new ArrayList<>();
         userIds.add(ownerId);
         CarModel car = new CarModel(vin, make, model, trim, year, ownerId, userIds);
@@ -67,7 +65,7 @@ public class CarController {
     }
 
 
-    public void deleteCarById(String carId, CarListener listener) {
+    public static void deleteCarById(String carId, CarListener listener) {
         firestore.collection("Car")
                 .document(carId)
                 .delete()
@@ -79,7 +77,7 @@ public class CarController {
                 });
     }
 
-    public void updateCarById(String carId, CarModel updatedCar, CarListener listener) {
+    public static void updateCarById(String carId, CarModel updatedCar, CarListener listener) {
         Map<String, Object> updatedData = new HashMap<>();
         updatedData.put("vin", updatedCar.getVin());
         updatedData.put("make", updatedCar.getMake());
