@@ -24,7 +24,9 @@
         </activity>
         <activity android:name=".NewMaintenanceEventActivity"
             android:label="New Event">
-
+        </activity>
+        <activity android:name=".NewCarActivity"
+            android:label="New Car">
         </activity>
     </application>
 

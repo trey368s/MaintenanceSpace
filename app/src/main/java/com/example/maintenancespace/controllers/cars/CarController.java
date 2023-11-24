@@ -44,6 +44,7 @@ public class CarController {
                     ArrayList<CarModel> cars = new ArrayList<>();
                     for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                         CarModel car = document.toObject(CarModel.class);
+                        car.setId(document.getId());
                         cars.add(car);
                     }
                     listener.onCarsFetched(cars);

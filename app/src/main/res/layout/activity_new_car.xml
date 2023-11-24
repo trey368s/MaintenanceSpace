@@ -30,7 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <AutoCompleteTextView
+            <EditText
                 android:id="@+id/editVin"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
@@ -48,7 +48,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="Oil Change"
+                android:hint="Honda"
                 android:inputType="text"
                 android:maxWidth="488dp"
                 android:textColor="@color/black"
@@ -63,7 +63,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:labelFor="@id/editMake"
-                android:text="Event Name"
+                android:text="Make"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +76,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="Get the oil changed"
+                android:hint="Civic"
                 android:inputType="text"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -90,58 +90,75 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:labelFor="@id/editModel"
-                android:text="Event Description"
+                android:text="Model"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editMake" />
 
-            <CalendarView
-                android:id="@+id/editDate"
+            <EditText
+                android:id="@+id/editTrim"
                 android:layout_width="0dp"
-                android:layout_height="300dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:ems="10"
+                android:hint="EX"
+                android:inputType="text"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dateLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/trimLabel" />
 
             <TextView
-                android:id="@+id/dateLabel"
+                android:id="@+id/trimLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:labelFor="@id/editDate"
-                android:text="Event Date"
+                android:labelFor="@id/editModel"
+                android:text="Trim"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editModel" />
 
-            <TimePicker
-                android:id="@+id/editTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <EditText
+                android:id="@+id/editYear"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:inputType="time"
+                android:hint="2008"
+                android:inputType="number"
                 android:textColor="@color/black"
-                android:timePickerMode="spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editDate" />
+                app:layout_constraintTop_toBottomOf="@+id/yearLabel" />
+
+            <TextView
+                android:id="@+id/yearLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:labelFor="@id/editModel"
+                android:text="Year"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTrim" />
 
             <Button
-                android:id="@+id/addEventButton"
+                android:id="@+id/addCarButton"
                 android:layout_width="200dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="16dp"
-                android:text="Add Event"
+                android:text="Add Car"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTime" />
+                app:layout_constraintTop_toBottomOf="@+id/editYear" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

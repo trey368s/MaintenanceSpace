@@ -3,6 +3,7 @@ package com.example.maintenancespace.models.cars;
 import java.util.ArrayList;
 
 public class CarModel {
+    private String id;
     private String vin;
     private String make;
     private String model;
@@ -14,6 +15,18 @@ public class CarModel {
     public CarModel(){
 
     }
+
+    public CarModel(String id, String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds){
+        this.id = id;
+        this.vin = vin;
+        this.make = make;
+        this.model = model;
+        this.trim = trim;
+        this.year = year;
+        this.ownerId = ownerId;
+        this.userIds = userIds;
+    }
+
     public CarModel(String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds){
         this.vin = vin;
         this.make = make;
@@ -23,6 +36,10 @@ public class CarModel {
         this.ownerId = ownerId;
         this.userIds = userIds;
     }
+
+    public void setId(String id) { this.id = id; }
+
+    public String getId() { return id; }
 
     public String getVin(){
         return vin;

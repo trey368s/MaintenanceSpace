@@ -2,20 +2,16 @@ package com.example.maintenancespace.ui.events;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.controllers.events.MaintenanceEventController;
@@ -29,9 +25,21 @@ public class EventFragment extends Fragment {
 
     private FragmentEventBinding binding;
 
+    public void addEvent(MaintenanceEventModel event) {
+        final FragmentManager fragmentManager = getChildFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.eventList);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MaintenanceEventFragment newEventListItem = MaintenanceEventFragment.newInstance(event);
+        fragmentTransaction.add(R.id.eventList, newEventListItem);
+        fragmentTransaction.detach(fragment);
+        fragmentTransaction.attach(fragment);
+        fragmentTransaction.commitNowAllowingStateLoss();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        NewMaintenanceEventActivity.updateEventFragment(this);
         binding = FragmentEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         final FragmentManager fragmentManager = getChildFragmentManager();

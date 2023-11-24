@@ -1,6 +1,7 @@
 package com.example.maintenancespace;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -13,9 +14,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.maintenancespace.databinding.ActivityMainBinding;
 
+import java.lang.ref.WeakReference;
+
 public class MainActivity extends AppCompatActivity {
 
+
     private ActivityMainBinding binding;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

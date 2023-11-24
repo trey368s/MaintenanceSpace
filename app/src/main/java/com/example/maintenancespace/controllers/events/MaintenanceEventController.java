@@ -71,6 +71,7 @@ public class MaintenanceEventController {
                                     ArrayList<MaintenanceEventModel> events = new ArrayList<>();
                                     for(DocumentSnapshot eventDocument : documentSnapshots.getDocuments()) {
                                         MaintenanceEventModel event = eventDocument.toObject(MaintenanceEventModel.class);
+                                        event.setId(eventDocument.getId());
                                         events.add(event);
                                     }
                                     listener.onEventsFetched(events);
@@ -95,8 +96,9 @@ public class MaintenanceEventController {
                 });
     }
 
-    public static void createByCarId(String carId, String name, String description, Float mileage, Timestamp date, MaintenanceEventStatus status, MaintenanceEventListener listener) {
-        MaintenanceEventModel event = new MaintenanceEventModel(carId, name, description, mileage, date, status);
+    public static void createByCarId(String carId, MaintenanceEventModel event, MaintenanceEventListener listener) {
+        event.setId(carId);
+
         firestore.collection("Car")
                 .document(carId)
                 .collection("MaintenanceEvent")
