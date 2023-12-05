@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">MaintenanceSpace</string>
+    <string name="maintenance_event_name">Event Name</string>
+    <string name="maintenance_event_description">Event Description</string>
+    <string name="maintenance_event_due">Due</string>
+    <string name="maintenance_event_date">1/1/2024</string>
+    <string name="maintenance_event_time">12:00pm</string>
     <string name="title_cars">Cars</string>
     <string name="title_events">Events</string>
     <string name="title_reports">Reports</string>
+    <string name="maintenance_event_list_content_description">List of events</string>
 </resources>

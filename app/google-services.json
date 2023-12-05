@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "332919823947",
+    "project_id": "maintenancespace-ac91c",
+    "storage_bucket": "maintenancespace-ac91c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332919823947:android:4cab1e1473451340ef37ce",
+        "android_client_info": {
+          "package_name": "com.example.maintenancespace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs79mvDKhRapa4EXMnVubCJl-4BxbGgVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
