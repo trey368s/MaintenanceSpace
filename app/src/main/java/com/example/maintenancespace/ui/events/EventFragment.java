@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
+import com.example.maintenancespace.controllers.UserController;
 import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.databinding.FragmentEventBinding;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
@@ -50,7 +51,7 @@ public class EventFragment extends Fragment {
         });
 
         if(savedInstanceState == null) {
-            MaintenanceEventController.fetchAllByUserId("rjdx2qXKhhZTxwZBssB0N37hrPD2", new MaintenanceEventController.MaintenanceEventListener() {
+            MaintenanceEventController.fetchAllByUserId(UserController.getCurrentUser().getUid(), new MaintenanceEventController.MaintenanceEventListener() {
                 @Override
                 public void onEventFetched(MaintenanceEventModel event) {
 
