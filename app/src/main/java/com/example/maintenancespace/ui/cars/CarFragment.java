@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.NewCarActivity;
 import com.example.maintenancespace.R;
+import com.example.maintenancespace.controllers.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.databinding.FragmentCarBinding;
 import com.example.maintenancespace.models.cars.CarModel;
@@ -56,7 +57,7 @@ public class CarFragment extends Fragment {
             startActivity(switchActivity);
         });
 
-        CarController.fetchAllCarsByUserId("rjdx2qXKhhZTxwZBssB0N37hrPD2", new CarController.CarListener() {
+        CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
 
             @Override
             public void onCarFetched(CarModel car) {
