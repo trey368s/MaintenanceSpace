@@ -2,8 +2,6 @@ package com.example.maintenancespace.utilities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
