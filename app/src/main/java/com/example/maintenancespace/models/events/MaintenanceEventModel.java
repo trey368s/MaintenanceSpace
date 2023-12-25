@@ -2,8 +2,6 @@ package com.example.maintenancespace.models.events;
 
 import com.google.firebase.Timestamp;
 
-import javax.annotation.Nullable;
-
 public class MaintenanceEventModel {
     private String id;
     private String carId;
