@@ -29,7 +29,7 @@ public class UserController
 
     public static boolean isUserSignedIn() {
         FirebaseUser currentUser = fireAuth.getCurrentUser();
-        if(currentUser != null) {
+        if(currentUser == null) {
             return false;
         }
         return true;
