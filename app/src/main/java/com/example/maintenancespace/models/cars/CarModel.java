@@ -68,4 +68,9 @@ public class CarModel {
     public ArrayList<String> getUserIds(){
         return userIds;
     }
+
+    @Override
+    public String toString() {
+        return this.getYear() + " " + this.getMake() + " " + this.getModel() + " " + this.getTrim();
+    }
 }
