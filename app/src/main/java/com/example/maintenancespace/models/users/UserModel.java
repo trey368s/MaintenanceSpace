@@ -2,27 +2,19 @@ package com.example.maintenancespace.models.users;
 
 public class UserModel {
     private int userId;
-    private String firstName;
-    private String lastName;
+    private String email;
 
 
-    public UserModel(int userId, String firstName, String lastName)
+
+    public UserModel(int userId, String email)
     {
         this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.email = email;
     }
 
     public int getUser()
     {
         return userId;
     }
-    public String getFirstName()
-    {
-        return firstName;
-    }
-    public String getLastName()
-    {
-        return lastName;
-    }
+    public String getEmail(){return email;}
 }

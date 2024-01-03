@@ -17,11 +17,7 @@ import com.example.maintenancespace.databinding.ActivityMainBinding;
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
-
-
     private ActivityMainBinding binding;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
