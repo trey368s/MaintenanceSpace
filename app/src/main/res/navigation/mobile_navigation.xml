@@ -22,4 +22,10 @@
         android:name="com.example.maintenancespace.ui.reports.ReportFragment"
         android:label="@string/title_reports"
         tools:layout="@layout/fragment_report" />
+
+    <fragment
+        android:id="@+id/navigation_gps"
+        android:name="com.example.maintenancespace.ui.gps.GpsFragment"
+        android:label="@string/title_gps"
+        tools:layout="@layout/fragment_gps" />
 </navigation>
