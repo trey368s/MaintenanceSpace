@@ -19,6 +19,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.maintenancespace.MainActivity;
+import com.example.maintenancespace.controllers.cars.CarController;
+import com.example.maintenancespace.models.cars.CarModel;
+import com.example.maintenancespace.models.dailyMileage.DailyMileageModel;
 import com.example.maintenancespace.ui.gps.GpsViewModel;
 
 import java.sql.Array;
@@ -27,6 +30,7 @@ import java.util.function.Consumer;
 
 public class TripService extends Service {
     private LocationManager locationManager;
+    private String carId;
 
     private float tripDistanceInMeters = 0;
 
@@ -50,6 +54,7 @@ public class TripService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags,int startId) {
         super.onStartCommand(intent, flags, startId);
+        this.carId = intent.getStringExtra("carId");
         gpsViewModel = new ViewModelProvider(MainActivity.activity).get(GpsViewModel.class);
 
         LocationListener locationListener = location -> {
@@ -83,6 +88,45 @@ public class TripService extends Service {
     }
 
     public void updateCarMileage(float distanceInMeters) {
+        if (distanceInMeters > 0) {
+            CarController.fetchCarById(this.carId, new CarController.CarListener() {
+                @Override
+                public void onCarFetched(CarModel car) {
+                    ArrayList<DailyMileageModel> dailyMileage = car.getDailyMileageDays();
 
+                    CarController.updateDailyMileageByCarId(TripService.this.carId);
+                }
+
+                @Override
+                public void onCarsFetched(ArrayList<CarModel> cars) {
+
+                }
+
+                @Override
+                public void onDailyMileageUpdate(String carId) {
+
+                }
+
+                @Override
+                public void onCreation(String docId) {
+
+                }
+
+                @Override
+                public void onDelete(String docId) {
+
+                }
+
+                @Override
+                public void onUpdate(String docId) {
+
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+        }
     }
 }

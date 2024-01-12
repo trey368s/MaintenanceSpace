@@ -1,6 +1,8 @@
 package com.example.maintenancespace.controllers.cars;
 
+import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.models.cars.CarModel;
+import com.example.maintenancespace.models.dailyMileage.DailyMileageModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -17,6 +19,7 @@ public class CarController {
     public interface CarListener {
         void onCarFetched(CarModel car);
         void onCarsFetched(ArrayList<CarModel> cars);
+        void onDailyMileageUpdate(String carId);
         void onCreation(String docId);
         void onDelete(String docId);
         void onUpdate(String docId);
@@ -99,4 +102,18 @@ public class CarController {
                 });
     }
 
+    public static void updateDailyMileageByCarId(String carId, ArrayList<DailyMileageModel> dailyMileage, CarController.CarListener listener) {
+        Map<String, Object> updatedData = new HashMap<>();
+        updatedData.put("dailyMileage", dailyMileage);
+
+        firestore.collection("Car")
+                .document(carId)
+                .set(updatedData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    listener.onDailyMileageUpdate(carId);
+                })
+                .addOnFailureListener(e -> {
+                    listener.onFailure(e);
+                });
+    }
 }

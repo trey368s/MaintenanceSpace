@@ -1,5 +1,7 @@
 package com.example.maintenancespace.models.cars;
 
+import com.example.maintenancespace.models.dailyMileage.DailyMileageModel;
+
 import java.util.ArrayList;
 
 public class CarModel {
@@ -11,12 +13,13 @@ public class CarModel {
     private int year;
     private String ownerId;
     private ArrayList<String> userIds;
+    private ArrayList<DailyMileageModel> dailyMileageDays;
 
     public CarModel(){
 
     }
 
-    public CarModel(String id, String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds){
+    public CarModel(String id, String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds, ArrayList<DailyMileageModel> dailyMileageDays){
         this.id = id;
         this.vin = vin;
         this.make = make;
@@ -25,6 +28,7 @@ public class CarModel {
         this.year = year;
         this.ownerId = ownerId;
         this.userIds = userIds;
+        this.dailyMileageDays = dailyMileageDays;
     }
 
     public CarModel(String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds){
@@ -68,6 +72,8 @@ public class CarModel {
     public ArrayList<String> getUserIds(){
         return userIds;
     }
+
+    public ArrayList<DailyMileageModel> getDailyMileageDays() { return this.dailyMileageDays; }
 
     @Override
     public String toString() {

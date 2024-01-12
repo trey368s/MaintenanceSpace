@@ -12,4 +12,12 @@ public class TimeHelpers {
     public static long convertMillisecondsToSeconds(long milliseconds) {
         return milliseconds / 1000;
     }
+
+    public static long convertDaysToSeconds(int days) {
+        return convertHoursToSeconds(days * 24);
+    }
+
+    public static long convertSecondsToMilliseconds(long seconds) {
+        return seconds * 1000;
+    }
 }
