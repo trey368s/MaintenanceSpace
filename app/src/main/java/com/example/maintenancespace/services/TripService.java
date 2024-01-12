@@ -21,12 +21,16 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.ui.gps.GpsViewModel;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class TripService extends Service {
-    public static String ACTIVE_EXTRA = "ACTIVE_EXTRA";
-    public Context context = this;
     private LocationManager locationManager;
+
+    private float tripDistanceInMeters = 0;
+
+    private int PERMISSION_REQUEST_CODE = 100;
 
     private Location previousLocation = null;
     private GpsViewModel gpsViewModel;
@@ -38,32 +42,31 @@ public class TripService extends Service {
 
     @Override
     public void onDestroy() {
-        /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
-        //handler.removeCallbacks(runnable);
         super.onDestroy();
+        updateCarMileage(this.tripDistanceInMeters);
         gpsViewModel.setIsTripServiceRunning(false);
-        Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags,int startId) {
         super.onStartCommand(intent, flags, startId);
-        Bundle extras = intent.getExtras();
         gpsViewModel = new ViewModelProvider(MainActivity.activity).get(GpsViewModel.class);
 
         LocationListener locationListener = location -> {
-
+            if (previousLocation != null) {
+                float distance = this.previousLocation.distanceTo(location);
+                this.tripDistanceInMeters += distance;
+            }
+            this.previousLocation = location;
         };
+
         this.locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return START_REDELIVER_INTENT;
+            String[] requiredPermissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+            MainActivity.activity.requestPermissions(requiredPermissions, PERMISSION_REQUEST_CODE);
+
+            stopSelf();
+            return START_NOT_STICKY;
         }
         locationManager.getCurrentLocation(LocationManager.GPS_PROVIDER, null, getApplication().getMainExecutor(), new Consumer<Location>() {
             @Override
@@ -71,12 +74,15 @@ public class TripService extends Service {
                 TripService.this.previousLocation = location;
             }
         });
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 20, locationListener);
-        intent.putExtra(ACTIVE_EXTRA, true);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, locationListener);
         gpsViewModel.setIsTripServiceRunning(true);
 
-        Toast.makeText(this, "Service", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Service", Toast.LENGTH_LONG).show();
 
         return START_STICKY;
+    }
+
+    public void updateCarMileage(float distanceInMeters) {
+
     }
 }
