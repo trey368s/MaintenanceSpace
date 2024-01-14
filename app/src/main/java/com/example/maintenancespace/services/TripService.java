@@ -94,7 +94,7 @@ public class TripService extends Service {
                 public void onCarFetched(CarModel car) {
                     ArrayList<DailyMileageModel> dailyMileage = car.getDailyMileageDays();
 
-                    CarController.updateDailyMileageByCarId(TripService.this.carId);
+//                    CarController.updateDailyMileageByCarId(TripService.this.carId);
                 }
 
                 @Override

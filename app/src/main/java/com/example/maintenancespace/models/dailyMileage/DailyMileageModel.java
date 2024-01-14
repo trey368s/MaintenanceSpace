@@ -84,11 +84,15 @@ public class DailyMileageModel implements Parcelable {
             if (dailyMileageListItem.getDate().getSeconds() == timestampNow.getSeconds()) {
                 float newDailyMileage = dailyMileageListItem.getDailyMileage() + mileageIncrease;
                 dailyMileageListItem.setDailyMileage(newDailyMileage);
-                return; // We found an entry and updated it, we can break this code now
+                return; // We found an entry and updated it, we can break out of this code now
             }
         }
 
-        dailyMileageList.set(0, new DailyMileageModel(mileageIncrease, DailyMileageModel.createTimestamp()));
+        dailyMileageList.add(new DailyMileageModel(mileageIncrease, DailyMileageModel.createTimestamp()));
+        int entryCount = dailyMileageList.size();
+        if (entryCount > 7) {
+            dailyMileageList.subList(7, entryCount).clear();
+        }
     }
 
     @Override

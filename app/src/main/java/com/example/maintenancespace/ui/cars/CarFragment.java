@@ -79,6 +79,11 @@ public class CarFragment extends Fragment {
             }
 
             @Override
+            public void onDailyMileageUpdate(String carId) {
+
+            }
+
+            @Override
             public void onCreation(String docId){
                 //textView.setText("Created Car ID: " + docId);
             }

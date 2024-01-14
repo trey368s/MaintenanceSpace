@@ -92,6 +92,11 @@ public class NewCarActivity extends AppCompatActivity {
                     }
 
                     @Override
+                    public void onDailyMileageUpdate(String carId) {
+
+                    }
+
+                    @Override
                     public void onCreation(String docId) {
                         CarFragment carFragment = carFragmentWeakReference.get();
                         newCar.setId(docId);
