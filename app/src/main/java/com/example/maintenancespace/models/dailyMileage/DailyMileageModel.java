@@ -77,7 +77,7 @@ public class DailyMileageModel implements Parcelable {
         long secondsSinceEpoch = TimeHelpers.convertMillisecondsToSeconds(calendar.getTimeInMillis());
         return new Timestamp(secondsSinceEpoch, 0);
     };
-    public void updateDailyMileage(float mileageIncrease, ArrayList<DailyMileageModel> dailyMileageList) {
+    public static void updateDailyMileage(float mileageIncrease, ArrayList<DailyMileageModel> dailyMileageList) {
         for (DailyMileageModel dailyMileageListItem : dailyMileageList) {
             Timestamp timestampNow = DailyMileageModel.createTimestamp();
 
