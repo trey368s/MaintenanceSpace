@@ -75,6 +75,8 @@ public class CarModel {
 
     public ArrayList<DailyMileageModel> getDailyMileageDays() { return this.dailyMileageDays; }
 
+    public void setDailyMileageDays(ArrayList<DailyMileageModel> dailyMileageDays) { this.dailyMileageDays = dailyMileageDays; }
+
     @Override
     public String toString() {
         return this.getYear() + " " + this.getMake() + " " + this.getModel() + " " + this.getTrim();
