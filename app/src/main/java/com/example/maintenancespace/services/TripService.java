@@ -93,8 +93,45 @@ public class TripService extends Service {
                 @Override
                 public void onCarFetched(CarModel car) {
                     ArrayList<DailyMileageModel> dailyMileage = car.getDailyMileageDays();
+                    float distanceInMiles = distanceInMeters / 1609.34f;
+                    DailyMileageModel.updateDailyMileage(distanceInMiles, dailyMileage);
 
-//                    CarController.updateDailyMileageByCarId(TripService.this.carId);
+                    CarController.updateDailyMileageByCarId(TripService.this.carId, dailyMileage, new CarController.CarListener() {
+                        @Override
+                        public void onCarFetched(CarModel car) {
+
+                        }
+
+                        @Override
+                        public void onCarsFetched(ArrayList<CarModel> cars) {
+
+                        }
+
+                        @Override
+                        public void onDailyMileageUpdate(String carId) {
+
+                        }
+
+                        @Override
+                        public void onCreation(String docId) {
+
+                        }
+
+                        @Override
+                        public void onDelete(String docId) {
+
+                        }
+
+                        @Override
+                        public void onUpdate(String docId) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+
+                        }
+                    });
                 }
 
                 @Override
