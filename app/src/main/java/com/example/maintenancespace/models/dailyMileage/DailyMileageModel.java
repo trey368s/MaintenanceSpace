@@ -88,7 +88,7 @@ public class DailyMileageModel implements Parcelable {
             }
         }
 
-        dailyMileageList.add(new DailyMileageModel(mileageIncrease, DailyMileageModel.createTimestamp()));
+        dailyMileageList.add(0, new DailyMileageModel(mileageIncrease, DailyMileageModel.createTimestamp()));
         int entryCount = dailyMileageList.size();
         if (entryCount > 7) {
             dailyMileageList.subList(7, entryCount).clear();
