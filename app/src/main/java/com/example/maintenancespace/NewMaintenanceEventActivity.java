@@ -11,6 +11,7 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.controllers.events.MaintenanceEventController;
@@ -18,6 +19,7 @@ import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBindi
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.example.maintenancespace.ui.events.EventFragment;
+import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.utilities.TimeHelpers;
 import com.google.firebase.Timestamp;
 
@@ -60,6 +62,8 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
         TimePicker editTimeField = root.findViewById(R.id.editTime);
         Button addCarButton = root.findViewById(R.id.addEventButton);
 
+        EventViewModel eventsViewModel = new ViewModelProvider(EventFragment.viewModelOwner).get(EventViewModel.class); // Get the view model from the fragment
+
 
         addCarButton.setOnClickListener(v -> {
             String vin = editVinField.getText().toString();
@@ -91,10 +95,11 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
                             @Override
                             public void onCreation(String docId) {
-                                EventFragment eventFragment = eventFragmentWeakReference.get();
-                                eventFragment.addEvent(newEvent);
+                                ArrayList<MaintenanceEventModel> events = eventsViewModel.getEvents().getValue(); // Get the current list of events
+                                events.add(newEvent); // Add the new event to the list
+                                eventsViewModel.setEvents(events); // Set the events so the change can be observed
 
-                                finish();
+                                finish(); // Call finish to end the activity
                             }
 
                             @Override

@@ -1,5 +1,6 @@
 package com.example.maintenancespace.ui.events;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
@@ -23,30 +26,40 @@ import java.util.ArrayList;
 
 public class EventFragment extends Fragment {
 
-    private FragmentEventBinding binding;
+    public static Fragment viewModelOwner;
 
-    public void addEvent(MaintenanceEventModel event) {
-        final FragmentManager fragmentManager = getChildFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.eventList);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MaintenanceEventFragment newEventListItem = MaintenanceEventFragment.newInstance(event);
-        fragmentTransaction.add(R.id.eventList, newEventListItem);
-        fragmentTransaction.detach(fragment);
-        fragmentTransaction.attach(fragment);
-        fragmentTransaction.commitNowAllowingStateLoss();
-    }
+    private FragmentEventBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        viewModelOwner = this; // Create a static reference to this fragment so it can be accessed in the other files
         NewMaintenanceEventActivity.updateEventFragment(this);
         binding = FragmentEventBinding.inflate(inflater, container, false);
+        EventViewModel viewModel = new ViewModelProvider(this).get(EventViewModel.class); // Create a view model with this fragment as the owner.
         View root = binding.getRoot();
         final FragmentManager fragmentManager = getChildFragmentManager();
         FloatingActionButton addEventButton = root.findViewById(R.id.addMaintenanceEvent);
         addEventButton.setOnClickListener(v -> {
             Intent switchActivity = new Intent(getActivity(), NewMaintenanceEventActivity.class);
             startActivity(switchActivity);
+        });
+
+        viewModel.getEvents().observe(getViewLifecycleOwner(), events -> { // observe when the events get updated
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Start a fragment transaction
+
+            for(int i = 0; i < fragmentManager.getBackStackEntryCount(); i++){ // Remove all the fragments in the view
+                fragmentManager.popBackStack();
+            }
+
+            if(events != null) {
+                events.forEach(event -> { // For each event in the view model add it to the eventList view
+                    MaintenanceEventFragment newEventListItem = MaintenanceEventFragment.newInstance(event);
+                    fragmentTransaction.add(R.id.eventList, newEventListItem);
+                });
+            }
+
+            fragmentTransaction.commit(); // Commit the changes.
         });
 
         if(savedInstanceState == null) {
@@ -58,14 +71,7 @@ public class EventFragment extends Fragment {
 
                 @Override
                 public void onEventsFetched(ArrayList<MaintenanceEventModel> events) {
-                    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    for (MaintenanceEventModel event : events) {
-                        MaintenanceEventFragment eventFragment = MaintenanceEventFragment.newInstance(event);
-                        fragmentTransaction.add(R.id.eventList, eventFragment);
-                    }
-
-                    fragmentTransaction.commit();
+                    viewModel.setEvents(events); // Set the events from the initial fetch
                 }
 
                 @Override
