@@ -4,16 +4,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.maintenancespace.models.cars.CarModel;
+
+import java.util.ArrayList;
+
 public class CarViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private final MutableLiveData<ArrayList<CarModel>> cars;
 
     public CarViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is a car fragment");
+        cars = new MutableLiveData<>(null);
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<ArrayList<CarModel>> getCars() {
+        return cars;
     }
+
+    public void setCars(ArrayList<CarModel> updatedCars) { cars.setValue(updatedCars);}
 }

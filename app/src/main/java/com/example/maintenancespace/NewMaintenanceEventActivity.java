@@ -28,14 +28,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class NewMaintenanceEventActivity extends AppCompatActivity {
-    public static WeakReference<EventFragment> eventFragmentWeakReference;
     private ActivityNewMaintenanceEventBinding binding;
     private ArrayList<CarModel> carList;
 
-
-    public static void updateEventFragment(EventFragment fragment) {
-        eventFragmentWeakReference = new WeakReference(fragment);
-    }
 
     private boolean validateForm(String carId, String name, String description, Timestamp date) {
         if(carId.isEmpty()) {
@@ -96,6 +91,7 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
                             @Override
                             public void onCreation(String docId) {
                                 ArrayList<MaintenanceEventModel> events = eventsViewModel.getEvents().getValue(); // Get the current list of events
+                                newEvent.setId(docId);
                                 events.add(newEvent); // Add the new event to the list
                                 eventsViewModel.setEvents(events); // Set the events so the change can be observed
 

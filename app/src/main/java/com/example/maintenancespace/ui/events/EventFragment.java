@@ -1,6 +1,5 @@
 package com.example.maintenancespace.ui.events;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.NewMaintenanceEventActivity;
@@ -34,7 +32,6 @@ public class EventFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         viewModelOwner = this; // Create a static reference to this fragment so it can be accessed in the other files
-        NewMaintenanceEventActivity.updateEventFragment(this);
         binding = FragmentEventBinding.inflate(inflater, container, false);
         EventViewModel viewModel = new ViewModelProvider(this).get(EventViewModel.class); // Create a view model with this fragment as the owner.
         View root = binding.getRoot();
