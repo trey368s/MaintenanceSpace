@@ -79,7 +79,7 @@ public class CarFragment extends Fragment {
             }
 
             @Override
-            public void onDailyMileageUpdate(String carId) {
+            public void onDailyDistanceUpdate(String carId) {
 
             }
 

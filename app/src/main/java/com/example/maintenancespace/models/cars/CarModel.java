@@ -1,6 +1,6 @@
 package com.example.maintenancespace.models.cars;
 
-import com.example.maintenancespace.models.dailyMileage.DailyMileageModel;
+import com.example.maintenancespace.models.dailyDistance.DailyDistanceModel;
 
 import java.util.ArrayList;
 
@@ -13,13 +13,13 @@ public class CarModel {
     private int year;
     private String ownerId;
     private ArrayList<String> userIds;
-    private ArrayList<DailyMileageModel> dailyMileageDays;
+    private ArrayList<DailyDistanceModel> dailyDistanceDays;
 
     public CarModel(){
 
     }
 
-    public CarModel(String id, String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds, ArrayList<DailyMileageModel> dailyMileageDays){
+    public CarModel(String id, String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds, ArrayList<DailyDistanceModel> dailyDistanceDays){
         this.id = id;
         this.vin = vin;
         this.make = make;
@@ -28,7 +28,7 @@ public class CarModel {
         this.year = year;
         this.ownerId = ownerId;
         this.userIds = userIds;
-        this.dailyMileageDays = dailyMileageDays;
+        this.dailyDistanceDays = dailyDistanceDays;
     }
 
     public CarModel(String vin, String make, String model, String trim, int year, String ownerId, ArrayList<String> userIds){
@@ -73,9 +73,9 @@ public class CarModel {
         return userIds;
     }
 
-    public ArrayList<DailyMileageModel> getDailyMileageDays() { return this.dailyMileageDays; }
+    public ArrayList<DailyDistanceModel> getDailyDistanceDays() { return this.dailyDistanceDays; }
 
-    public void setDailyMileageDays(ArrayList<DailyMileageModel> dailyMileageDays) { this.dailyMileageDays = dailyMileageDays; }
+    public void setDailyDistanceDays(ArrayList<DailyDistanceModel> dailyDistanceDays) { this.dailyDistanceDays = dailyDistanceDays; }
 
     @Override
     public String toString() {

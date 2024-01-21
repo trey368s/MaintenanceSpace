@@ -7,39 +7,39 @@ public class MaintenanceEventModel {
     private String carId;
     private String name;
     private String description;
-    private float mileage;
+    private float distance;
     private Timestamp date;
     private MaintenanceEventStatus status;
     private int receiptId;
 
     public MaintenanceEventModel() {}
 
-    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status, int receiptId) {
+    public MaintenanceEventModel(String id, String carId, String name, String description, float distance, Timestamp date, MaintenanceEventStatus status, int receiptId) {
         this.id = id;
         this.carId = carId;
         this.name = name;
         this.description = description;
-        this.mileage = mileage;
+        this.distance = distance;
         this.date = date;
         this.status = status;
         this.receiptId = receiptId;
     }
 
-    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
+    public MaintenanceEventModel(String id, String carId, String name, String description, float distance, Timestamp date, MaintenanceEventStatus status) {
         this.id = id;
         this.carId = carId;
         this.name = name;
         this.description = description;
-        this.mileage = mileage;
+        this.distance = distance;
         this.date = date;
         this.status = status;
     }
 
-    public MaintenanceEventModel(String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
+    public MaintenanceEventModel(String carId, String name, String description, float distance, Timestamp date, MaintenanceEventStatus status) {
         this.carId = carId;
         this.name = name;
         this.description = description;
-        this.mileage = mileage;
+        this.distance = distance;
         this.date = date;
         this.status = status;
     }
@@ -68,8 +68,8 @@ public class MaintenanceEventModel {
         return description;
     }
 
-    public float getMileage() {
-        return mileage;
+    public float getDistance() {
+        return distance;
     }
 
     public Timestamp getDate() {
@@ -87,19 +87,19 @@ public class MaintenanceEventModel {
     public String getCsvRow() {
         String nameCell = this.getName();
         String descriptionCell = this.getDescription() != null && !this.getDescription().trim().isEmpty() ? this.getDescription() : "";
-        String mileageCell = this.getMileage() != 0.0f ? Float.toString(this.getMileage()) : "";
+        String distanceCell = this.getDistance() != 0.0f ? Float.toString(this.getDistance()) : "";
         String dateCell = this.getDate() != null ? this.getDate().toDate().toString() : "";
         String statusCell = this.getStatus() != null ? this.getStatus().name() : "";
 
         String row = nameCell;
         row += "," + descriptionCell;
-        row += "," + mileageCell;
+        row += "," + distanceCell;
         row += "," + dateCell;
         row += "," + statusCell;
         return row;
     }
 
     public static String getCsvHeaders() {
-        return "Event Name,Event Description,Mileage Due At,Date Due At,Status";
+        return "Event Name,Event Description,Due At Meters,Date Due At,Status";
     }
 }

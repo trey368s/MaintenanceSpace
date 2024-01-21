@@ -1,7 +1,6 @@
 package com.example.maintenancespace.services;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.*;
 import android.content.pm.PackageManager;
@@ -9,22 +8,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.*;
-import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.models.cars.CarModel;
-import com.example.maintenancespace.models.dailyMileage.DailyMileageModel;
+import com.example.maintenancespace.models.dailyDistance.DailyDistanceModel;
 import com.example.maintenancespace.ui.gps.GpsViewModel;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -47,8 +40,21 @@ public class TripService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        updateCarMileage(this.tripDistanceInMeters);
-        gpsViewModel.setIsTripServiceRunning(false);
+
+        LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locManager.getCurrentLocation(LocationManager.GPS_PROVIDER, null, getApplication().getMainExecutor(), new Consumer<Location>() {
+            @Override
+            public void accept(Location location) {
+                TripService.this.tripDistanceInMeters += TripService.this.previousLocation.distanceTo(location);
+                TripService.this.previousLocation = location;
+                updateCarDistance(TripService.this.tripDistanceInMeters);
+                gpsViewModel.setIsTripServiceRunning(false);
+            }
+        });
+
     }
 
     @Override
@@ -87,16 +93,15 @@ public class TripService extends Service {
         return START_STICKY;
     }
 
-    public void updateCarMileage(float distanceInMeters) {
+    public void updateCarDistance(float distanceInMeters) {
         if (distanceInMeters > 0) {
             CarController.fetchCarById(this.carId, new CarController.CarListener() {
                 @Override
                 public void onCarFetched(CarModel car) {
-                    ArrayList<DailyMileageModel> dailyMileage = car.getDailyMileageDays();
-                    float distanceInMiles = distanceInMeters / 1609.34f;
-                    DailyMileageModel.updateDailyMileage(distanceInMiles, dailyMileage);
+                    ArrayList<DailyDistanceModel> dailyDistance = car.getDailyDistanceDays();
+                    ArrayList<DailyDistanceModel> updatedDailyDistance = DailyDistanceModel.createUpdatedDailyDistance(distanceInMeters, dailyDistance);
 
-                    CarController.updateDailyMileageByCarId(TripService.this.carId, dailyMileage, new CarController.CarListener() {
+                    CarController.updateDailyDistanceByCarId(TripService.this.carId, updatedDailyDistance, new CarController.CarListener() {
                         @Override
                         public void onCarFetched(CarModel car) {
 
@@ -108,7 +113,7 @@ public class TripService extends Service {
                         }
 
                         @Override
-                        public void onDailyMileageUpdate(String carId) {
+                        public void onDailyDistanceUpdate(String carId) {
 
                         }
 
@@ -140,7 +145,7 @@ public class TripService extends Service {
                 }
 
                 @Override
-                public void onDailyMileageUpdate(String carId) {
+                public void onDailyDistanceUpdate(String carId) {
 
                 }
 

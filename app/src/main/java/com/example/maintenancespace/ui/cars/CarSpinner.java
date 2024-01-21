@@ -35,7 +35,7 @@ public class CarSpinner extends androidx.appcompat.widget.AppCompatSpinner {
             }
 
             @Override
-            public void onDailyMileageUpdate(String carId) {
+            public void onDailyDistanceUpdate(String carId) {
 
             }
 
