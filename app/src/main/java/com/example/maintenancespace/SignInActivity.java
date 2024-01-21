@@ -1,6 +1,8 @@
 package com.example.maintenancespace;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,25 +10,48 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.maintenancespace.controllers.UserController;
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.databinding.ActivitySignInBinding;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatActivity {
     private ActivitySignInBinding binding;
 
+    private Intent startMainActivity;
+
+    final private UserController.SignInListener signInHandler = new UserController.SignInListener() {
+        @Override
+        public void onSuccess(FirebaseUser user) {
+            startActivity(startMainActivity);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.startMainActivity = new Intent(this, MainActivity.class);
 
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         View root = binding.getRoot();
         setContentView(root);
 
-        Intent startMainActivity = new Intent(this, MainActivity.class);
+        UserController.signOut();
 
         if(UserController.isUserSignedIn()) {
             startActivity(startMainActivity);
+        } else {
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            String email = sharedPref.getString(UserController.EMAIL_KEY, "");
+            String password = sharedPref.getString(UserController.PASS_KEY, "");
+            if(!email.equals("") && !password.equals("")) {
+                UserController.signIn(this, email, password, signInHandler);
+            }
         }
 
         EditText emailField = root.findViewById(R.id.editEmail);
@@ -34,17 +59,7 @@ public class SignInActivity extends AppCompatActivity {
         Button signInButton = root.findViewById(R.id.signInButton);
 
         signInButton.setOnClickListener(v -> {
-            UserController.signIn(emailField.getText().toString(), passwordField.getText().toString(), new UserController.SignInListener() {
-                @Override
-                public void onSuccess(FirebaseUser user) {
-                    startActivity(startMainActivity);
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-
-                }
-            });
+            UserController.signIn(this, emailField.getText().toString(), passwordField.getText().toString(), signInHandler);
         });
     }
 }

@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
-import com.example.maintenancespace.controllers.UserController;
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.databinding.FragmentEventBinding;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
