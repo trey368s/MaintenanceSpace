@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.maintenancespace.controllers.UserController;
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.databinding.ActivitySignInBinding;
 import com.google.firebase.auth.FirebaseUser;
 

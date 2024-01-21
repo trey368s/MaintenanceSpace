@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 
-import com.example.maintenancespace.controllers.UserController;
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.models.cars.CarModel;
 

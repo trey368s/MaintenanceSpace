@@ -26,6 +26,7 @@
         android:theme="@style/Theme.MaintenanceSpace"
         tools:targetApi="34">
         <service android:enabled="true" android:name="com.example.maintenancespace.services.TripService" />
+        <service android:name=".services.NotificationService" android:exported="false" />
         <activity android:name=".SignInActivity"
             android:exported="true"
             android:label="Sign In">
@@ -64,7 +65,5 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
     </application>
-
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.maintenancespace.controllers;
+package com.example.maintenancespace.controllers.users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
