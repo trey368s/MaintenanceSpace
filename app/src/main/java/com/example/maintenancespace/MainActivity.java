@@ -1,40 +1,32 @@
 package com.example.maintenancespace;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Notification;
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.provider.Settings;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import com.example.maintenancespace.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
-    private ActivityMainBinding binding;
-    private static final String CHANNEL_ID = "UpdateChannel";
-    private static final int NOTIFICATION_ID = 1;
-    private NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -45,68 +37,76 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        String CHANNEL_ID = "UpdateChannel";
+        NotificationManager notificationManager;
+
+        int NOTIFICATION_ID = 1;
+        String carString = "2005 Silver Buick LeSabre";
+        String eventStatus = "approaching designated mileage"; //could be overdue
+        String eventName = "oil change";
+
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        createNotificationChannel();
+        createNotificationChannel(CHANNEL_ID, notificationManager);
 
         checkAndRequestNotificationPermission(getApplicationContext());
-        showNotification();
+
+        scheduleNotification(10000, CHANNEL_ID, NOTIFICATION_ID, carString, eventStatus, eventName);
     }
 
-    public void showNotification() {
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent;
+    public void scheduleNotification(int delay, String CHANNEL_ID, int NOTIFICATION_ID,
+                                     String carString, String eventStatus, String eventName) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-        Notification.Builder builder = null;
+        Intent intent = new Intent(this, NotificationReceiver.class);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            builder = new Notification.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                    .setContentTitle("Service Update - MaintenanceSpace")
-                    .setContentText("Your [car] is approaching the designated mileage for a [service event].")
-                    .setPriority(Notification.PRIORITY_DEFAULT)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);
-        }
+        intent.putExtra("CHANNEL_ID", CHANNEL_ID);
+        intent.putExtra("NOTIFICATION_ID", NOTIFICATION_ID);
+        intent.putExtra("carString", carString);
+        intent.putExtra("eventStatus", eventStatus);
+        intent.putExtra("eventName", eventName);
 
-        Notification notification;
-        notification = builder.build();
-        notificationManager.notify(NOTIFICATION_ID,notification);
-    }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-    public void createNotificationChannel() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            CharSequence channelName = "Maintenance Updates";
-            String channelDescription = "Notification channel for updates about upcoming service events.";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, importance);
-            channel.setDescription(channelDescription);
-
-            notificationManager.createNotificationChannel(channel);
+        try {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-    public void checkAndRequestNotificationPermission(Context context) {
+
+    public void rescheduleNotification(Context context, int notificationId, int newDelayMillis, String CHANNEL_ID,
+                                       String carString, String eventStatus, String eventName) {
+
+        cancelNotification(context, notificationId);
+        scheduleNotification(newDelayMillis, CHANNEL_ID, notificationId, carString, eventStatus, eventName);
+    }
+
+    public void cancelNotification(Context context, int notificationId) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(notificationId);
+    }
+
+    private void createNotificationChannel(String CHANNEL_ID, NotificationManager notificationManager) {
+        CharSequence channelName = "Maintenance Updates";
+        String channelDescription = "Notification channel for updates about upcoming service events.";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, importance);
+        channel.setDescription(channelDescription);
+
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    private void checkAndRequestNotificationPermission(Context context) {
         boolean areNotificationsEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
 
         if (!areNotificationsEnabled) {
             Intent intent = new Intent();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
-                intent.putExtra("app_package", getPackageName());
-                intent.putExtra("app_uid", getApplicationInfo().uid);
-            } else {
-                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                intent.setData(Uri.parse("package:" + getPackageName()));
-            }
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
             startActivity(intent);
         }
     }
