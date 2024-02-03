@@ -41,20 +41,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vinLabel" />
 
-            <EditText
-                android:id="@+id/editMake"
+            <Spinner
+                android:id="@+id/spinnerEventType"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:ems="10"
-                android:hint="Oil Change"
-                android:inputType="text"
-                android:maxWidth="488dp"
-                android:textColor="@color/black"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/makeLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/makeLabel"
+                android:entries="@array/event_types"
+                android:prompt="@string/select_event_type" />
 
             <TextView
                 android:id="@+id/makeLabel"
@@ -94,7 +92,7 @@
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editMake" />
+                app:layout_constraintTop_toBottomOf="@+id/spinnerEventType" />
 
             <CalendarView
                 android:id="@+id/editDate"

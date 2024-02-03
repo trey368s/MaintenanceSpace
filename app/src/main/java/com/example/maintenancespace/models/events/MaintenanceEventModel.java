@@ -5,49 +5,54 @@ import com.google.firebase.Timestamp;
 public class MaintenanceEventModel {
     private String id;
     private String carId;
-    private String name;
     private String description;
+    private String name;
     private float mileage;
     private Timestamp date;
     private MaintenanceEventStatus status;
+    private MaintenanceEventType eventType;
     private int receiptId;
 
     public MaintenanceEventModel() {}
 
-    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status, int receiptId) {
+    public MaintenanceEventModel(String id, String carId, String description, float mileage, Timestamp date, MaintenanceEventStatus status, int receiptId, MaintenanceEventType eventType, String name) {
         this.id = id;
         this.carId = carId;
-        this.name = name;
         this.description = description;
         this.mileage = mileage;
         this.date = date;
         this.status = status;
         this.receiptId = receiptId;
+        this.eventType = eventType;
+        this.name = name;
     }
 
-    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
+    public MaintenanceEventModel(String id, String carId, String description, float mileage, Timestamp date, MaintenanceEventStatus status, MaintenanceEventType eventType, String name) {
         this.id = id;
+        this.eventType = eventType;
         this.carId = carId;
-        this.name = name;
         this.description = description;
         this.mileage = mileage;
         this.date = date;
         this.status = status;
+        this.name = name;
     }
 
-    public MaintenanceEventModel(String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
+    public MaintenanceEventModel(String carId, String description, float mileage, Timestamp date, MaintenanceEventStatus status, MaintenanceEventType eventType, String name) {
         this.carId = carId;
-        this.name = name;
+        this.eventType = eventType;
         this.description = description;
         this.mileage = mileage;
         this.date = date;
         this.status = status;
+        this.name = name;
     }
 
-    public MaintenanceEventModel(String name, String description, Timestamp date) {
-        this.name = name;
+    public MaintenanceEventModel(String description, Timestamp date, MaintenanceEventType eventType, String name) {
+        this.eventType = eventType;
         this.description = description;
         this.date = date;
+        this.name = name;
     }
 
     public String getId() {
@@ -56,12 +61,12 @@ public class MaintenanceEventModel {
 
     public void setId(String id) { this.id = id; }
 
-    public String getCarId() {
-        return carId;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public MaintenanceEventType getType() {
+        return eventType;
     }
 
     public String getDescription() {
@@ -85,7 +90,7 @@ public class MaintenanceEventModel {
     }
 
     public String getCsvRow() {
-        String nameCell = this.getName();
+        String nameCell = String.valueOf(this.getType());
         String descriptionCell = this.getDescription() != null && !this.getDescription().trim().isEmpty() ? this.getDescription() : "";
         String mileageCell = this.getMileage() != 0.0f ? Float.toString(this.getMileage()) : "";
         String dateCell = this.getDate() != null ? this.getDate().toDate().toString() : "";
@@ -101,5 +106,9 @@ public class MaintenanceEventModel {
 
     public static String getCsvHeaders() {
         return "Event Name,Event Description,Mileage Due At,Date Due At,Status";
+    }
+
+    public void setName(String toString) {
+        this.name = toString;
     }
 }

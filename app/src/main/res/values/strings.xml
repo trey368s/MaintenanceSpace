@@ -10,4 +10,10 @@
     <string name="title_reports">Reports</string>
     <string name="title_gps">GPS</string>
     <string name="maintenance_event_list_content_description">List of events</string>
+    <string name="select_event_type">Select Event Type</string>
+    <string-array name="event_types">
+        <item>Oil Change</item>
+        <item>Tire Rotation</item>
+        <item>Brake Inspection</item>
+    </string-array>
 </resources>

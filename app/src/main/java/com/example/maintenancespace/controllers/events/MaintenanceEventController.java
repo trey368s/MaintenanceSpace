@@ -98,7 +98,7 @@ public class MaintenanceEventController {
 
     public static void createByCarId(String carId, MaintenanceEventModel event, MaintenanceEventListener listener) {
         event.setId(carId);
-
+        event.setName(event.getType().toString());
         firestore.collection("Car")
                 .document(carId)
                 .collection("MaintenanceEvent")
@@ -112,7 +112,7 @@ public class MaintenanceEventController {
 
     public static void updateById(String carId, String maintenanceEventId, MaintenanceEventModel updatedEvent, MaintenanceEventListener listener) {
         Map<String, Object> updatedData = new HashMap<>();
-        updatedData.put("name", updatedEvent.getName());
+        updatedData.put("name", updatedEvent.getType());
         updatedData.put("description", updatedEvent.getDescription());
         updatedData.put("mileage", updatedEvent.getMileage());
         updatedData.put("date", updatedEvent.getDate());

@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.example.maintenancespace.controllers.events.MaintenanceEventControlle
 import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBinding;
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
+import com.example.maintenancespace.models.events.MaintenanceEventType;
 import com.example.maintenancespace.ui.events.EventFragment;
 import com.example.maintenancespace.utilities.TimeHelpers;
 import com.google.firebase.Timestamp;
@@ -64,8 +66,8 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
         addCarButton.setOnClickListener(v -> {
             String vin = editVinField.getText().toString();
-            String name = editNameField.getText().toString();
             String description = editDescription.getText().toString();
+
             long dateTime = TimeHelpers.convertMillisecondsToSeconds(editDateField.getDate());
             long hoursInSeconds = TimeHelpers.convertHoursToSeconds(editTimeField.getHour());
             long minutesInSeconds = TimeHelpers.convertMinutesToSeconds(editTimeField.getMinute());
@@ -73,12 +75,14 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
             Timestamp dateTimeStamp = new Timestamp(secondsSinceEpoch, 0);
 
-            MaintenanceEventModel newEvent = new MaintenanceEventModel(name, description, dateTimeStamp);
+            MaintenanceEventType eventType = getSelectedEventType();
+
+            MaintenanceEventModel newEvent = new MaintenanceEventModel(description, dateTimeStamp, eventType, eventType.toString());
 
             for(CarModel car : carList) {
                 if(Objects.equals(car.getVin(), vin.toString())) {
                     newEvent.setId(car.getId());
-                    if(validateForm(car.getId(), name, description, dateTimeStamp)) {
+                    if(validateForm(car.getId(), eventType.toString(), description, dateTimeStamp)) {
                         MaintenanceEventController.createByCarId(car.getId(), newEvent, new MaintenanceEventController.MaintenanceEventListener() {
                             @Override
                             public void onEventFetched(MaintenanceEventModel event) {
@@ -168,6 +172,24 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    private MaintenanceEventType getSelectedEventType() {
+        Spinner editEventTypeField = findViewById(R.id.spinnerEventType);
+
+        String selectedEventType = editEventTypeField.getSelectedItem().toString();
+
+        switch (selectedEventType) {
+            case "Oil Change":
+                return MaintenanceEventType.OIL_CHANGE;
+            case "Tire Rotation":
+                return MaintenanceEventType.TIRE_ROTATION;
+            case "Brake Inspection":
+                return MaintenanceEventType.BRAKE_INSPECTION;
+            default:
+                return MaintenanceEventType.OTHER;
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){

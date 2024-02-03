@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.databinding.FragmentMaintenanceEventBinding;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
+import com.example.maintenancespace.models.events.MaintenanceEventType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,16 +34,17 @@ public class MaintenanceEventFragment extends Fragment {
         Date date = maintenanceEvent.getDate().toDate();
         String dateFormatted = dateFormatter.format(date);
         String timeFormatted = timeFormatter.format(date).toLowerCase();
+        String name = maintenanceEvent.getName();
 
-
-        Bundle bundle = new Bundle(2);
-        bundle.putString(EVENT_NAME, maintenanceEvent.getName());
+        Bundle bundle = new Bundle();
+        bundle.putString(EVENT_NAME, name);
         bundle.putString(EVENT_DESCRIPTION, maintenanceEvent.getDescription());
         bundle.putString(EVENT_DATE, dateFormatted);
         bundle.putString(EVENT_TIME, timeFormatted);
         fragment.setArguments(bundle);
-        return fragment ;
+        return fragment;
     }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
