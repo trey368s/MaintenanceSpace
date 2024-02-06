@@ -9,4 +9,5 @@
     <string name="title_events">Events</string>
     <string name="title_reports">Reports</string>
     <string name="maintenance_event_list_content_description">List of events</string>
+    <string name="repair_shops">Repair Shops</string>
 </resources>
