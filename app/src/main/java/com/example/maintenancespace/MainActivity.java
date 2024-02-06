@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Report", Log.getStackTraceString(e));
             }
         }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
