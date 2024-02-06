@@ -50,7 +50,6 @@ public class MaintenanceEventModel {
         this.date = date;
     }
 
-
     public String getId() {
         return id;
     }
@@ -83,5 +82,24 @@ public class MaintenanceEventModel {
 
     public int getReceiptId() {
         return receiptId;
+    }
+
+    public String getCsvRow() {
+        String nameCell = this.getName();
+        String descriptionCell = this.getDescription() != null && !this.getDescription().trim().isEmpty() ? this.getDescription() : "";
+        String mileageCell = this.getMileage() != 0.0f ? Float.toString(this.getMileage()) : "";
+        String dateCell = this.getDate() != null ? this.getDate().toDate().toString() : "";
+        String statusCell = this.getStatus() != null ? this.getStatus().name() : "";
+
+        String row = nameCell;
+        row += "," + descriptionCell;
+        row += "," + mileageCell;
+        row += "," + dateCell;
+        row += "," + statusCell;
+        return row;
+    }
+
+    public static String getCsvHeaders() {
+        return "Event Name,Event Description,Mileage Due At,Date Due At,Status";
     }
 }
