@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/repair_shops"
+        android:icon="@drawable/baseline_car_repair_24"
+        android:title="@string/repair_shops"
+        app:showAsAction="always"
+        />
+</menu>
