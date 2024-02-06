@@ -12,6 +12,7 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBinding;
@@ -118,7 +119,7 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
             }
         });
 
-        CarController.fetchAllCarsByUserId("rjdx2qXKhhZTxwZBssB0N37hrPD2", new CarController.CarListener() {
+        CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
             @Override
             public void onCarFetched(CarModel car) {
 

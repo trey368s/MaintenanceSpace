@@ -1,25 +1,19 @@
 package com.example.maintenancespace;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
-import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.databinding.ActivityNewCarBinding;
-import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBinding;
 import com.example.maintenancespace.models.cars.CarModel;
-import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.example.maintenancespace.ui.cars.CarFragment;
-import com.example.maintenancespace.utilities.TimeHelpers;
-import com.google.firebase.Timestamp;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -73,11 +67,11 @@ public class NewCarActivity extends AppCompatActivity {
             int year = Integer.parseInt(editYear.getText().toString());
 
             ArrayList userIds = new ArrayList<String>();
-            userIds.add("rjdx2qXKhhZTxwZBssB0N37hrPD2");
-            CarModel newCar = new CarModel(vin, make, model, trim, year, "rjdx2qXKhhZTxwZBssB0N37hrPD2", userIds);
+            userIds.add(UserController.getCurrentUser().getUid());
+            CarModel newCar = new CarModel(vin, make, model, trim, year, UserController.getCurrentUser().getUid(), userIds);
 
             if(validateForm(vin, make, model, trim, year)) {
-                CarController.createCarByUserId(vin, make, model, trim, year, "rjdx2qXKhhZTxwZBssB0N37hrPD2", new CarController.CarListener() {
+                CarController.createCarByUserId(vin, make, model, trim, year, UserController.getCurrentUser().getUid(), new CarController.CarListener() {
 
                     @Override
                     public void onCarFetched(CarModel car) {
@@ -110,7 +104,7 @@ public class NewCarActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-
+                        Log.d("FAIL", e.toString());
                     }
                 });
             }

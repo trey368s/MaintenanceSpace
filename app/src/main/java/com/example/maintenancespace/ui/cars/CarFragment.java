@@ -5,23 +5,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.NewCarActivity;
 import com.example.maintenancespace.R;
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.databinding.FragmentCarBinding;
 import com.example.maintenancespace.models.cars.CarModel;
-import com.example.maintenancespace.models.events.MaintenanceEventModel;
-import com.example.maintenancespace.ui.events.MaintenanceEventFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -56,7 +52,7 @@ public class CarFragment extends Fragment {
             startActivity(switchActivity);
         });
 
-        CarController.fetchAllCarsByUserId("rjdx2qXKhhZTxwZBssB0N37hrPD2", new CarController.CarListener() {
+        CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
 
             @Override
             public void onCarFetched(CarModel car) {
