@@ -1,4 +1,4 @@
-package com.example.maintenancespace;
+package com.example.maintenancespace.utilities;
 
 import static org.junit.Assert.assertEquals;
 
