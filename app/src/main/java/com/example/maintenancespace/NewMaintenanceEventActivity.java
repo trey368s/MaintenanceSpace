@@ -19,6 +19,7 @@ import com.example.maintenancespace.controllers.events.MaintenanceEventControlle
 import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBinding;
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
+import com.example.maintenancespace.models.events.MaintenanceEventStatus;
 import com.example.maintenancespace.models.events.MaintenanceEventType;
 import com.example.maintenancespace.ui.events.EventFragment;
 import com.example.maintenancespace.utilities.TimeHelpers;
@@ -77,11 +78,10 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
             MaintenanceEventType eventType = getSelectedEventType();
 
-            MaintenanceEventModel newEvent = new MaintenanceEventModel(description, dateTimeStamp, eventType, eventType.toString());
+            MaintenanceEventModel newEvent = new MaintenanceEventModel("99",vin,description, 99,dateTimeStamp, MaintenanceEventStatus.FUTURE,99,eventType, eventType.toString());
 
             for(CarModel car : carList) {
                 if(Objects.equals(car.getVin(), vin.toString())) {
-                    newEvent.setId(car.getId());
                     if(validateForm(car.getId(), eventType.toString(), description, dateTimeStamp)) {
                         MaintenanceEventController.createByCarId(car.getId(), newEvent, new MaintenanceEventController.MaintenanceEventListener() {
                             @Override
@@ -95,9 +95,9 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onCreation(String docId) {
+                            public void onCreation(MaintenanceEventModel event) {
                                 EventFragment eventFragment = eventFragmentWeakReference.get();
-                                eventFragment.addEvent(newEvent);
+                                eventFragment.addEvent(event);
 
                                 finish();
                             }

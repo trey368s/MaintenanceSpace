@@ -48,7 +48,7 @@ public class ReportFragment extends Fragment {
                 }
 
                 @Override
-                public void onCreation(String docId) {
+                public void onCreation(MaintenanceEventModel event) {
 
                 }
 

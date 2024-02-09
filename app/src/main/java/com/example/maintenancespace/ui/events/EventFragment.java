@@ -70,7 +70,7 @@ public class EventFragment extends Fragment {
                 }
 
                 @Override
-                public void onCreation(String docId) {
+                public void onCreation(MaintenanceEventModel event) {
 
                 }
 

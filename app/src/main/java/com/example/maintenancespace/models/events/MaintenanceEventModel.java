@@ -65,6 +65,8 @@ public class MaintenanceEventModel {
         return name;
     }
 
+    public String getCarId(){return carId;}
+
     public MaintenanceEventType getType() {
         return eventType;
     }
@@ -110,5 +112,9 @@ public class MaintenanceEventModel {
 
     public void setName(String toString) {
         this.name = toString;
+    }
+
+    public void setCarId(String string){
+        this.carId = string;
     }
 }

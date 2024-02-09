@@ -1,10 +1,6 @@
 package com.example.maintenancespace.controllers.events;
 
-import android.util.Log;
-
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
-import com.example.maintenancespace.models.events.MaintenanceEventStatus;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -20,7 +16,7 @@ public class MaintenanceEventController {
     public interface MaintenanceEventListener {
         void onEventFetched(MaintenanceEventModel event);
         void onEventsFetched(ArrayList<MaintenanceEventModel> events);
-        void onCreation(String docId);
+        void onCreation(MaintenanceEventModel event);
         void onDelete(String docId);
         void onUpdate(String docId);
         void onFailure(Exception e);
@@ -97,15 +93,25 @@ public class MaintenanceEventController {
     }
 
     public static void createByCarId(String carId, MaintenanceEventModel event, MaintenanceEventListener listener) {
-        event.setId(carId);
         event.setName(event.getType().toString());
+        event.setCarId(carId);
         firestore.collection("Car")
                 .document(carId)
                 .collection("MaintenanceEvent")
                 .add(event)
                 .addOnSuccessListener(documentReference -> {
                     String docId = documentReference.getId();
-                    listener.onCreation(docId);
+                    event.setId(docId);
+                    firestore.collection("Car")
+                            .document(carId)
+                            .collection("MaintenanceEvent")
+                            .document(docId)
+                            .set(event)
+                            .addOnSuccessListener(aVoid -> {
+                                listener.onCreation(event);
+                            })
+                            .addOnFailureListener(e -> listener.onFailure(e));
+
                 })
                 .addOnFailureListener(e -> listener.onFailure(e));
     }

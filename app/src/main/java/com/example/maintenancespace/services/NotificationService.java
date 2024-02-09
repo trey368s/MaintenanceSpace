@@ -16,6 +16,15 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.NotificationReceiver;
+import com.example.maintenancespace.controllers.cars.CarController;
+import com.example.maintenancespace.controllers.events.MaintenanceEventController;
+import com.example.maintenancespace.controllers.users.UserController;
+import com.example.maintenancespace.models.cars.CarModel;
+import com.example.maintenancespace.models.events.MaintenanceEventModel;
+import com.example.maintenancespace.models.events.MaintenanceEventStatus;
+import com.google.firebase.Timestamp;
+
+import java.util.ArrayList;
 
 public class NotificationService extends Service {
 
@@ -31,18 +40,103 @@ public class NotificationService extends Service {
 
         String CHANNEL_ID = "UpdateChannel";
         NotificationManager notificationManager;
-
         int NOTIFICATION_ID = 1;
-        String carString = "2005 Silver Buick LeSabre";
-        String eventStatus = "approaching designated mileage"; //could be overdue
-        String eventName = "oil change";
 
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         createNotificationChannel(CHANNEL_ID, notificationManager);
 
         checkAndRequestNotificationPermission(getApplicationContext());
 
-        scheduleNotification(10000, CHANNEL_ID, NOTIFICATION_ID, carString, eventStatus, eventName);
+        MaintenanceEventController.fetchAllByUserId(UserController.getCurrentUser().getUid(), new MaintenanceEventController.MaintenanceEventListener() {
+            @Override
+            public void onEventFetched(MaintenanceEventModel event) {
+                //scheduleNotification(10000, CHANNEL_ID, String.valueOf(NOTIFICATION_ID), carString, eventStatus, eventName);
+            }
+
+            @Override
+            public void onEventsFetched(ArrayList<MaintenanceEventModel> events) {
+                for (MaintenanceEventModel event : events) {
+                    Timestamp eventTimestamp = event.getDate();
+                    long eventTimeMillis = eventTimestamp.toDate().getTime();
+                    long currentTimeMillis = System.currentTimeMillis();
+                    long timeDifferenceMillis = eventTimeMillis - currentTimeMillis;
+                    MaintenanceEventStatus status;
+                    if(timeDifferenceMillis>0){
+                        status = MaintenanceEventStatus.FUTURE;
+                    }
+                    if(timeDifferenceMillis<=0){
+                        status = MaintenanceEventStatus.PAST_DUE;
+                    }
+                    else{
+                        status = MaintenanceEventStatus.OTHER;
+                    }
+
+                    MaintenanceEventStatus finalStatus = status;
+                    CarController.fetchCarById(event.getCarId(), new CarController.CarListener() {
+                        @Override
+                        public void onCarFetched(CarModel car) {
+                            String year = String.valueOf(event.getCarId());
+                            String make = car.getMake();
+                            String model = car.getModel();
+                            String trim = car.getTrim();
+                            String carString = year + " " + trim + " " + make + " " + model;
+
+                            scheduleNotification((int)timeDifferenceMillis, CHANNEL_ID, event.getId(), carString, finalStatus.toString(), event.getName().toString());
+                        }
+
+                        @Override
+                        public void onCarsFetched(ArrayList<CarModel> cars) {
+
+                        }
+
+                        @Override
+                        public void onDailyMileageUpdate(String carId) {
+
+                        }
+
+                        @Override
+                        public void onCreation(String docId) {
+
+                        }
+
+                        @Override
+                        public void onDelete(String docId) {
+
+                        }
+
+                        @Override
+                        public void onUpdate(String docId) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            // Handle the failure case
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCreation(MaintenanceEventModel event) {
+
+            }
+
+            @Override
+            public void onDelete(String docId) {
+
+            }
+
+            @Override
+            public void onUpdate(String docId) {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
         return START_STICKY;
     }
 
@@ -52,7 +146,7 @@ public class NotificationService extends Service {
         return null;
     }
 
-    public void scheduleNotification(int delay, String CHANNEL_ID, int NOTIFICATION_ID,
+    public void scheduleNotification(int delay, String CHANNEL_ID, String NOTIFICATION_ID,
                                      String carString, String eventStatus, String eventName) {
 
         Intent intent = new Intent(this, NotificationReceiver.class);
@@ -76,16 +170,16 @@ public class NotificationService extends Service {
         }
     }
 
-    public void rescheduleNotification(Context context, int notificationId, int newDelayMillis, String CHANNEL_ID,
+    public void rescheduleNotification(Context context, String notificationId, int newDelayMillis, String CHANNEL_ID,
                                        String carString, String eventStatus, String eventName) {
 
         cancelNotification(context, notificationId);
         scheduleNotification(newDelayMillis, CHANNEL_ID, notificationId, carString, eventStatus, eventName);
     }
 
-    public void cancelNotification(Context context, int notificationId) {
+    public void cancelNotification(Context context, String notificationId) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(notificationId);
+        notificationManager.cancel(Integer.parseInt(notificationId));
     }
 
     private void createNotificationChannel(String CHANNEL_ID, NotificationManager notificationManager) {
