@@ -4,10 +4,37 @@ import static org.junit.Assert.assertEquals;
 
 import com.google.firebase.Timestamp;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MaintenanceEventModelTest {
-    MaintenanceEventModel event = new MaintenanceEventModel("1", "2", "Oil Change", "Foo Description", 203.1f, new Timestamp(1702433835, 0), MaintenanceEventStatus.FUTURE, 1);
+
+    MaintenanceEventModel event;
+
+    @BeforeEach
+    public void beforeEach() {
+      event = new MaintenanceEventModel("1", "2", "Oil Change", "Foo Description", 203.1f, new Timestamp(1702433835, 0), MaintenanceEventStatus.FUTURE, 1);
+    }
+    @Test
+    public void shouldBeAbleToCreateEmptyEvent() {
+        assertEquals(MaintenanceEventModel.class, new MaintenanceEventModel().getClass());
+    }
+
+    @Test
+    public void shouldBeAbleToCreateEventWithNameDescDate() {
+        MaintenanceEventModel newEvent = new MaintenanceEventModel("name", "desc", new Timestamp(100000, 0));
+        assertEquals(MaintenanceEventModel.class, newEvent.getClass());
+    }
+
+    @Test
+    public void shouldSetCorrectId() {
+        String expected = "newId";
+
+        event.setId(expected);
+
+        assertEquals(expected, event.getId());
+    }
+
 
     @Test
     public void shouldGetCorrectId() {

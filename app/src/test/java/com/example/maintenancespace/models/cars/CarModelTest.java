@@ -2,15 +2,43 @@ package com.example.maintenancespace.models.cars;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CarModelTest {
 
-    ArrayList<String> userIds = new ArrayList(Arrays.asList("1", "2", "3"));
-    CarModel car = new CarModel("carId", "vin", "make", "model", "trim", 2020, "ownerId", userIds);
+    CarModel car;
+
+    @BeforeEach
+    public void beforeEach() {
+        ArrayList<String> userIds = new ArrayList(Arrays.asList("1", "2", "3"));
+        car = new CarModel("carId", "vin", "make", "model", "trim", 2020, "ownerId", userIds);
+    }
+
+    @Test
+    public void shouldCreateAnEmptyCar() {
+        assertEquals(CarModel.class, new CarModel().getClass());
+    }
+
+    @Test
+    public void shouldBeAbleToCreateCarWithNoId() {
+        ArrayList<String> userIds = new ArrayList(Arrays.asList("1", "2", "3"));
+        CarModel newCar = new CarModel("vin", "make",  "model", "trim", 1999, "ownerId", userIds);
+
+        assertEquals(null, newCar.getId());
+    }
+
+    @Test
+    public void shouldSetCorrectId() {
+        String expected = "newCarId";
+
+        car.setId("newCarId");
+
+        assertEquals(expected, car.getId());
+    }
 
     @Test
     public void shouldGetCorrectId() {

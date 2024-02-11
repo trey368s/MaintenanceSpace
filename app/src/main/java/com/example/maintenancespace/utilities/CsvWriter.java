@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CsvWriter {
     public final static int CSV_WRITE_REQUEST_CODE = 1;
-    public static void generateMaintenanceReports(Activity activity,ArrayList<MaintenanceEventModel> events) {
+    public static void generateMaintenanceReports(Activity activity, ArrayList<MaintenanceEventModel> events) {
         try {
             // Create a new intent for creating a file
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);

@@ -25,25 +25,6 @@ public class MaintenanceEventModel {
         this.receiptId = receiptId;
     }
 
-    public MaintenanceEventModel(String id, String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
-        this.id = id;
-        this.carId = carId;
-        this.name = name;
-        this.description = description;
-        this.mileage = mileage;
-        this.date = date;
-        this.status = status;
-    }
-
-    public MaintenanceEventModel(String carId, String name, String description, float mileage, Timestamp date, MaintenanceEventStatus status) {
-        this.carId = carId;
-        this.name = name;
-        this.description = description;
-        this.mileage = mileage;
-        this.date = date;
-        this.status = status;
-    }
-
     public MaintenanceEventModel(String name, String description, Timestamp date) {
         this.name = name;
         this.description = description;
