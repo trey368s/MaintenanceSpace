@@ -11,6 +11,7 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
@@ -19,6 +20,7 @@ import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBindi
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.example.maintenancespace.ui.events.EventFragment;
+import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.utilities.TimeHelpers;
 import com.google.firebase.Timestamp;
 
@@ -27,14 +29,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class NewMaintenanceEventActivity extends AppCompatActivity {
-    public static WeakReference<EventFragment> eventFragmentWeakReference;
     private ActivityNewMaintenanceEventBinding binding;
     private ArrayList<CarModel> carList;
 
-
-    public static void updateEventFragment(EventFragment fragment) {
-        eventFragmentWeakReference = new WeakReference(fragment);
-    }
 
     private boolean validateForm(String carId, String name, String description, Timestamp date) {
         if(carId.isEmpty()) {
@@ -60,6 +57,8 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
         CalendarView editDateField = root.findViewById(R.id.editDate);
         TimePicker editTimeField = root.findViewById(R.id.editTime);
         Button addCarButton = root.findViewById(R.id.addEventButton);
+
+        EventViewModel eventsViewModel = new ViewModelProvider(EventFragment.viewModelOwner).get(EventViewModel.class); // Get the view model from the fragment
 
 
         addCarButton.setOnClickListener(v -> {
@@ -92,10 +91,12 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
                             @Override
                             public void onCreation(String docId) {
-                                EventFragment eventFragment = eventFragmentWeakReference.get();
-                                eventFragment.addEvent(newEvent);
+                                ArrayList<MaintenanceEventModel> events = eventsViewModel.getEvents().getValue(); // Get the current list of events
+                                newEvent.setId(docId);
+                                events.add(newEvent); // Add the new event to the list
+                                eventsViewModel.setEvents(events); // Set the events so the change can be observed
 
-                                finish();
+                                finish(); // Call finish to end the activity
                             }
 
                             @Override

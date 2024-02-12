@@ -8,24 +8,20 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.databinding.ActivityNewCarBinding;
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.ui.cars.CarFragment;
+import com.example.maintenancespace.ui.cars.CarViewModel;
 
-import java.lang.ref.WeakReference;
+
 import java.util.ArrayList;
 
 public class NewCarActivity extends AppCompatActivity {
-    public static WeakReference<CarFragment> carFragmentWeakReference;
     private ActivityNewCarBinding binding;
-
-
-    public static void updateCarFragment(CarFragment fragment) {
-        carFragmentWeakReference = new WeakReference(fragment);
-    }
 
     private boolean validateForm(String vin, String make, String model, String trim, int year) {
         if(vin.isEmpty()) {
@@ -49,6 +45,7 @@ public class NewCarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityNewCarBinding.inflate(getLayoutInflater());
+        CarViewModel carsViewModel = new ViewModelProvider(CarFragment.viewModelOwner).get(CarViewModel.class);
         ConstraintLayout root = binding.getRoot();
         setContentView(root);
         EditText editVinField = root.findViewById(R.id.editVin);
@@ -85,9 +82,10 @@ public class NewCarActivity extends AppCompatActivity {
 
                     @Override
                     public void onCreation(String docId) {
-                        CarFragment carFragment = carFragmentWeakReference.get();
+                        ArrayList<CarModel> cars = carsViewModel.getCars().getValue();
                         newCar.setId(docId);
-                        carFragment.addCar(newCar);
+                        cars.add(newCar);
+                        carsViewModel.setCars(cars);
 
                         finish();
                     }
