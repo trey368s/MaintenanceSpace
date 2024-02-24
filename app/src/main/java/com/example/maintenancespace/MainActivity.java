@@ -26,6 +26,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.maintenancespace.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -38,6 +39,7 @@ import java.io.OutputStreamWriter;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
                     Uri.parse("https://www.google.com/maps/search/repair+shops+near+me/"));
             startActivity(intent);
             return true;
+        }
+        
+        // action for logout button
+        if (id == R.id.logout_arrow) {
+            mAuth.signOut();
         }
 
         return super.onOptionsItemSelected(item);
