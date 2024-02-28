@@ -21,6 +21,7 @@ import com.example.maintenancespace.models.cars.CarModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarFragment extends Fragment {
 
@@ -46,16 +47,13 @@ public class CarFragment extends Fragment {
         viewModel.getCars().observe(getViewLifecycleOwner(), cars -> {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            for(int i = 0; i < fragmentManager.getBackStackEntryCount(); i++){
-                fragmentManager.popBackStack();
+            for(int i = 0; i < fragmentManager.getFragments().size(); i++){
+                List<Fragment> fragments = fragmentManager.getFragments();
+                fragmentTransaction.remove(fragments.get(i));
             }
 
             if(cars != null) {
                 cars.forEach(car -> {
-                    CarListItemFragment existingFragment = (CarListItemFragment) fragmentManager.findFragmentByTag(car.getId());
-                    if(existingFragment != null) {
-                        fragmentTransaction.remove(existingFragment);
-                    }
                     CarListItemFragment newCarListItem = CarListItemFragment.newInstance(car);
                     fragmentTransaction.add(R.id.car_layout, newCarListItem, car.getId());
                 });

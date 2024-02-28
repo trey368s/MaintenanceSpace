@@ -66,6 +66,50 @@ public class EditCarActivity extends AppCompatActivity {
         editTrim.setText(existingCar.getTrim());
         editYear.setText(Integer.toString(existingCar.getYear()));
 
+        Button deleteCarButton = binding.deleteCarButton;
+        deleteCarButton.setOnClickListener(v -> {
+            CarController.deleteCarById(carId, new CarController.CarListener() {
+                @Override
+                public void onCarFetched(CarModel car) {
+
+                }
+
+                @Override
+                public void onCarsFetched(ArrayList<CarModel> cars) {
+
+                }
+
+                @Override
+                public void onCreation(String docId) {
+
+                }
+
+                @Override
+                public void onDelete(String docId) {
+                    ArrayList<CarModel> cars = carsViewModel.getCars().getValue();
+
+                    for (int i = 0; i < cars.size(); i++) {
+                        if(cars.get(i).getId().equals(carId)) {
+                            cars.remove(i);
+                        }
+                    }
+                    carsViewModel.setCars(cars);
+
+                    finish();
+                }
+
+                @Override
+                public void onUpdate(String docId) {
+
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+        });
+
         Button saveCarButton = binding.saveCarEditButton;
         saveCarButton.setOnClickListener(v -> {
             String vin = editVinField.getText().toString();
@@ -106,7 +150,6 @@ public class EditCarActivity extends AppCompatActivity {
                         updatedCar.setId(docId);
 
                         for (int i = 0; i < cars.size(); i++) {
-                            Log.d("car equals", cars.get(i).getId().equals(carId) ? "true" : "false");
                             if(cars.get(i).getId().equals(carId)) {
                                 cars.set(i, updatedCar);
                             }
