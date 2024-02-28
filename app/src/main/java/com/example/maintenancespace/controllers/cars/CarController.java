@@ -1,5 +1,7 @@
 package com.example.maintenancespace.controllers.cars;
 
+import android.util.Log;
+
 import com.example.maintenancespace.models.cars.CarModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -87,7 +89,7 @@ public class CarController {
         updatedData.put("year", updatedCar.getYear());
         updatedData.put("ownerId", updatedCar.getOwnerId());
         updatedData.put("userIds", updatedCar.getUserIds());
-
+        Log.d("Car ID", carId);
         firestore.collection("Car")
                 .document(carId)
                 .set(updatedData, SetOptions.merge())

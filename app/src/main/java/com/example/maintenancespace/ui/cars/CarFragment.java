@@ -53,10 +53,11 @@ public class CarFragment extends Fragment {
             if(cars != null) {
                 cars.forEach(car -> {
                     CarListItemFragment existingFragment = (CarListItemFragment) fragmentManager.findFragmentByTag(car.getId());
-                    if(existingFragment == null) {
-                        CarListItemFragment newCarListItem = CarListItemFragment.newInstance(car);
-                        fragmentTransaction.add(R.id.car_layout, newCarListItem, car.getId());
+                    if(existingFragment != null) {
+                        fragmentTransaction.remove(existingFragment);
                     }
+                    CarListItemFragment newCarListItem = CarListItemFragment.newInstance(car);
+                    fragmentTransaction.add(R.id.car_layout, newCarListItem, car.getId());
                 });
             }
 

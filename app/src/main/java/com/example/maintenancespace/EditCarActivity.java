@@ -12,19 +12,19 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.controllers.users.UserController;
-import com.example.maintenancespace.databinding.ActivityCarEditBinding;
-import com.example.maintenancespace.databinding.ActivityNewCarBinding;
+import com.example.maintenancespace.databinding.ActivityEditCarBinding;
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.ui.cars.CarFragment;
+import com.example.maintenancespace.ui.cars.CarListItemFragment;
 import com.example.maintenancespace.ui.cars.CarViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class CarEditActivity extends AppCompatActivity {
+public class EditCarActivity extends AppCompatActivity {
 
     public static WeakReference<CarFragment> carFragmentWeakReference;
-    private ActivityCarEditBinding binding;
+    private ActivityEditCarBinding binding;
 
     private boolean validateForm(String vin, String make, String model, String trim, int year) {
         if(vin.isEmpty()) {
@@ -46,7 +46,11 @@ public class CarEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityCarEditBinding.inflate(getLayoutInflater());
+        String carId = getIntent().getExtras().getString(CarListItemFragment.CAR_ID_KEY);
+        CarModel existingCar = getIntent().getExtras().getSerializable("CAR", CarModel.class);
+
+
+        binding = ActivityEditCarBinding.inflate(getLayoutInflater());
         CarViewModel carsViewModel = new ViewModelProvider(CarFragment.viewModelOwner).get(CarViewModel.class);
         ConstraintLayout root = binding.getRoot();
         setContentView(root);
@@ -55,10 +59,15 @@ public class CarEditActivity extends AppCompatActivity {
         EditText editModel = root.findViewById(R.id.editModel);
         EditText editTrim = root.findViewById(R.id.editTrim);
         EditText editYear = root.findViewById(R.id.editYear);
-        Button addCarButton = root.findViewById(R.id.addCarButton);
 
+        editVinField.setText(existingCar.getVin());
+        editMakeField.setText(existingCar.getMake());
+        editModel.setText(existingCar.getModel());
+        editTrim.setText(existingCar.getTrim());
+        editYear.setText(Integer.toString(existingCar.getYear()));
 
-        addCarButton.setOnClickListener(v -> {
+        Button saveCarButton = binding.saveCarEditButton;
+        saveCarButton.setOnClickListener(v -> {
             String vin = editVinField.getText().toString();
             String make = editMakeField.getText().toString();
             String model = editModel.getText().toString();
@@ -67,10 +76,10 @@ public class CarEditActivity extends AppCompatActivity {
 
             ArrayList userIds = new ArrayList<String>();
             userIds.add(UserController.getCurrentUser().getUid());
-            CarModel newCar = new CarModel(vin, make, model, trim, year, UserController.getCurrentUser().getUid(), userIds);
+            CarModel updatedCar = new CarModel(vin, make, model, trim, year, UserController.getCurrentUser().getUid(), userIds);
 
             if(validateForm(vin, make, model, trim, year)) {
-                CarController.createCarByUserId(vin, make, model, trim, year, UserController.getCurrentUser().getUid(), new CarController.CarListener() {
+                CarController.updateCarById(carId, updatedCar, new CarController.CarListener() {
 
                     @Override
                     public void onCarFetched(CarModel car) {
@@ -84,12 +93,6 @@ public class CarEditActivity extends AppCompatActivity {
 
                     @Override
                     public void onCreation(String docId) {
-//                        ArrayList<CarModel> cars = carsViewModel.getCars().getValue();
-//                        newCar.setId(docId);
-//                        cars.add(newCar);
-//                        carsViewModel.setCars(cars);
-//
-//                        finish();
                     }
 
                     @Override
@@ -99,7 +102,17 @@ public class CarEditActivity extends AppCompatActivity {
 
                     @Override
                     public void onUpdate(String docId) {
-                        carsViewModel.setCars();
+                        ArrayList<CarModel> cars = carsViewModel.getCars().getValue();
+                        updatedCar.setId(docId);
+
+                        for (int i = 0; i < cars.size(); i++) {
+                            Log.d("car equals", cars.get(i).getId().equals(carId) ? "true" : "false");
+                            if(cars.get(i).getId().equals(carId)) {
+                                cars.set(i, updatedCar);
+                            }
+                        }
+                        carsViewModel.setCars(cars);
+                        finish();
                     }
 
                     @Override
