@@ -1,5 +1,6 @@
 package com.example.maintenancespace.ui.events;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.maintenancespace.EditCarActivity;
+import com.example.maintenancespace.EditEventActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.databinding.FragmentMaintenanceEventBinding;
+import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
 
 import java.text.SimpleDateFormat;
@@ -40,6 +44,7 @@ public class MaintenanceEventFragment extends Fragment {
         bundle.putString(EVENT_DESCRIPTION, maintenanceEvent.getDescription());
         bundle.putString(EVENT_DATE, dateFormatted);
         bundle.putString(EVENT_TIME, timeFormatted);
+        bundle.putParcelable("EVENT", maintenanceEvent);
         fragment.setArguments(bundle);
         return fragment ;
     }
@@ -49,6 +54,14 @@ public class MaintenanceEventFragment extends Fragment {
 
         binding = FragmentMaintenanceEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        Intent editIntent = new Intent(getActivity(), EditEventActivity.class);
+        editIntent.putExtra("EVENT", getArguments().getParcelable("EVENT", MaintenanceEventModel.class));
+
+        final ConstraintLayout carItem = binding.maintenanceEventListItem;
+        carItem.setOnClickListener(e -> {
+            startActivity(editIntent);
+        });
 
         final ConstraintLayout eventItem = binding.maintenanceEventListItem;
 

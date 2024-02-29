@@ -26,6 +26,8 @@ import com.google.firebase.Timestamp;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class NewMaintenanceEventActivity extends AppCompatActivity {
@@ -65,11 +67,14 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
             String vin = editVinField.getText().toString();
             String name = editNameField.getText().toString();
             String description = editDescription.getText().toString();
-            long dateTime = TimeHelpers.convertMillisecondsToSeconds(editDateField.getDate());
-            long hoursInSeconds = TimeHelpers.convertHoursToSeconds(editTimeField.getHour());
-            long minutesInSeconds = TimeHelpers.convertMinutesToSeconds(editTimeField.getMinute());
-            long secondsSinceEpoch = dateTime + hoursInSeconds + minutesInSeconds;
-
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date(editDateField.getDate()));
+            cal.set(Calendar.HOUR, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.set(Calendar.HOUR, editTimeField.getHour());
+            cal.set(Calendar.MINUTE, editTimeField.getMinute());
+            long secondsSinceEpoch = TimeHelpers.convertMillisecondsToSeconds(cal.getTimeInMillis());
             Timestamp dateTimeStamp = new Timestamp(secondsSinceEpoch, 0);
 
             MaintenanceEventModel newEvent = new MaintenanceEventModel(name, description, dateTimeStamp);

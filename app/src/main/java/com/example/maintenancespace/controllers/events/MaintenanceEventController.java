@@ -125,7 +125,7 @@ public class MaintenanceEventController {
                 .document(maintenanceEventId)
                 .set(updatedData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    listener.onUpdate(carId);
+                    listener.onUpdate(maintenanceEventId);
                 })
                 .addOnFailureListener(e -> {
                     listener.onFailure(e);

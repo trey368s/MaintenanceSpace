@@ -1,8 +1,11 @@
 package com.example.maintenancespace.models.events;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.Timestamp;
 
-public class MaintenanceEventModel {
+public class MaintenanceEventModel implements Parcelable {
     private String id;
     private String carId;
     private String name;
@@ -50,6 +53,44 @@ public class MaintenanceEventModel {
         this.date = date;
     }
 
+    protected MaintenanceEventModel(Parcel in) {
+        id = in.readString();
+        carId = in.readString();
+        name = in.readString();
+        description = in.readString();
+        mileage = in.readFloat();
+        date = in.readParcelable(Timestamp.class.getClassLoader());
+        receiptId = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(carId);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeFloat(mileage);
+        dest.writeParcelable(date, flags);
+        dest.writeInt(receiptId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MaintenanceEventModel> CREATOR = new Creator<MaintenanceEventModel>() {
+        @Override
+        public MaintenanceEventModel createFromParcel(Parcel in) {
+            return new MaintenanceEventModel(in);
+        }
+
+        @Override
+        public MaintenanceEventModel[] newArray(int size) {
+            return new MaintenanceEventModel[size];
+        }
+    };
+
     public String getId() {
         return id;
     }
@@ -61,10 +102,12 @@ public class MaintenanceEventModel {
         return carId;
     }
 
+    public void setName(String name) {this.name = name;}
     public String getName() {
         return name;
     }
 
+    public void setDescription(String description) {this.description = description;}
     public String getDescription() {
         return description;
     }
@@ -73,6 +116,7 @@ public class MaintenanceEventModel {
         return mileage;
     }
 
+    public void setDate(Timestamp date) { this.date = date; }
     public Timestamp getDate() {
         return date;
     }
