@@ -45,7 +45,7 @@ public class NewCarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityNewCarBinding.inflate(getLayoutInflater());
-        CarViewModel carsViewModel = new ViewModelProvider(CarFragment.viewModelOwner).get(CarViewModel.class);
+        CarViewModel carsViewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
         ConstraintLayout root = binding.getRoot();
         setContentView(root);
         EditText editVinField = root.findViewById(R.id.editVin);

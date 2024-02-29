@@ -56,6 +56,7 @@ public class MaintenanceEventModel {
 
     public void setId(String id) { this.id = id; }
 
+    public void setCarId(String id) { this.carId = id; }
     public String getCarId() {
         return carId;
     }

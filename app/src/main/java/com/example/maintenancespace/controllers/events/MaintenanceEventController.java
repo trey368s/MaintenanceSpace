@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,11 +43,11 @@ public class MaintenanceEventController {
                 .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public static void fetchAllByCarId(String carId, MaintenanceEventListener listener) {
+    public static void fetchAllByCarId(String carId, MaintenanceEventListener listener, boolean force) {
         firestore.collection("Car")
                 .document(carId)
                 .collection("MaintenanceEvent")
-                .get()
+                .get(force ? Source.SERVER : Source.DEFAULT)
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     ArrayList<MaintenanceEventModel> events = new ArrayList<>();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
@@ -58,15 +59,15 @@ public class MaintenanceEventController {
                 .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public static void fetchAllByUserId(String userId, MaintenanceEventListener listener) {
+    public static void fetchAllByUserId(String userId, MaintenanceEventListener listener, boolean force) {
         firestore.collection("Car")
                 .whereArrayContains("userIds", userId)
-                .get()
+                .get(force ? Source.SERVER : Source.DEFAULT)
                 .addOnSuccessListener(task -> {
                     for(DocumentSnapshot carDocument : task.getDocuments()) {
                         carDocument.getReference()
                                 .collection("MaintenanceEvent")
-                                .get()
+                                .get(force ? Source.SERVER : Source.DEFAULT)
                                 .addOnSuccessListener(documentSnapshots -> {
                                     ArrayList<MaintenanceEventModel> events = new ArrayList<>();
                                     for(DocumentSnapshot eventDocument : documentSnapshots.getDocuments()) {

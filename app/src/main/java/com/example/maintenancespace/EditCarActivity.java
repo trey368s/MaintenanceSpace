@@ -11,19 +11,21 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.maintenancespace.controllers.cars.CarController;
+import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.databinding.ActivityEditCarBinding;
 import com.example.maintenancespace.models.cars.CarModel;
+import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.example.maintenancespace.ui.cars.CarFragment;
 import com.example.maintenancespace.ui.cars.CarListItemFragment;
 import com.example.maintenancespace.ui.cars.CarViewModel;
+import com.example.maintenancespace.ui.events.EventFragment;
+import com.example.maintenancespace.ui.events.EventViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class EditCarActivity extends AppCompatActivity {
-
-    public static WeakReference<CarFragment> carFragmentWeakReference;
     private ActivityEditCarBinding binding;
 
     private boolean validateForm(String vin, String make, String model, String trim, int year) {
@@ -49,9 +51,9 @@ public class EditCarActivity extends AppCompatActivity {
         String carId = getIntent().getExtras().getString(CarListItemFragment.CAR_ID_KEY);
         CarModel existingCar = getIntent().getExtras().getSerializable("CAR", CarModel.class);
 
-
         binding = ActivityEditCarBinding.inflate(getLayoutInflater());
-        CarViewModel carsViewModel = new ViewModelProvider(CarFragment.viewModelOwner).get(CarViewModel.class);
+        CarViewModel carsViewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
+        EventViewModel eventViewModel  = new ViewModelProvider(MainActivity.viewModelOwner).get(EventViewModel.class);
         ConstraintLayout root = binding.getRoot();
         setContentView(root);
         EditText editVinField = root.findViewById(R.id.editVin);
@@ -87,6 +89,14 @@ public class EditCarActivity extends AppCompatActivity {
                 @Override
                 public void onDelete(String docId) {
                     ArrayList<CarModel> cars = carsViewModel.getCars().getValue();
+                    ArrayList<MaintenanceEventModel> events = eventViewModel.getEvents().getValue();
+
+                    for (int i = 0; i < events.size(); i++) {
+                        if(events.get(i).getCarId().equals(carId)) {
+                            events.remove(i);
+                        }
+                    }
+                    eventViewModel.setEvents(events);
 
                     for (int i = 0; i < cars.size(); i++) {
                         if(cars.get(i).getId().equals(carId)) {
@@ -94,7 +104,6 @@ public class EditCarActivity extends AppCompatActivity {
                         }
                     }
                     carsViewModel.setCars(cars);
-
                     finish();
                 }
 

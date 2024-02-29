@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.controllers.users.UserController;
@@ -22,19 +23,18 @@ import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventFragment extends Fragment {
 
-    public static Fragment viewModelOwner;
 
     private FragmentEventBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        viewModelOwner = this; // Create a static reference to this fragment so it can be accessed in the other files
         binding = FragmentEventBinding.inflate(inflater, container, false);
-        EventViewModel viewModel = new ViewModelProvider(this).get(EventViewModel.class); // Create a view model with this fragment as the owner.
+        EventViewModel viewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(EventViewModel.class);
         View root = binding.getRoot();
         final FragmentManager fragmentManager = getChildFragmentManager();
         FloatingActionButton addEventButton = root.findViewById(R.id.addMaintenanceEvent);
@@ -46,8 +46,9 @@ public class EventFragment extends Fragment {
         viewModel.getEvents().observe(getViewLifecycleOwner(), events -> { // observe when the events get updated
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Start a fragment transaction
 
-            for(int i = 0; i < fragmentManager.getBackStackEntryCount(); i++){ // Remove all the fragments in the view
-                fragmentManager.popBackStack();
+            for(int i = 0; i < fragmentManager.getFragments().size(); i++){ // Remove all the fragments in the view
+                List<Fragment> fragments = fragmentManager.getFragments();
+                fragmentTransaction.remove(fragments.get(i));
             }
 
             if(events != null) {
@@ -91,7 +92,7 @@ public class EventFragment extends Fragment {
                 public void onFailure(Exception e) {
 
                 }
-            });
+            }, false);
         }
 
         return root;

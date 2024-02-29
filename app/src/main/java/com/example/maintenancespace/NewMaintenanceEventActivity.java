@@ -58,7 +58,7 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
         TimePicker editTimeField = root.findViewById(R.id.editTime);
         Button addCarButton = root.findViewById(R.id.addEventButton);
 
-        EventViewModel eventsViewModel = new ViewModelProvider(EventFragment.viewModelOwner).get(EventViewModel.class); // Get the view model from the fragment
+        EventViewModel eventsViewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(EventViewModel.class); // Get the view model from the fragment
 
 
         addCarButton.setOnClickListener(v -> {
@@ -76,8 +76,8 @@ public class NewMaintenanceEventActivity extends AppCompatActivity {
 
             for(CarModel car : carList) {
                 if(Objects.equals(car.getVin(), vin.toString())) {
-                    newEvent.setId(car.getId());
-                    if(validateForm(car.getId(), name, description, dateTimeStamp)) {
+                    newEvent.setCarId(car.getId());
+                    if(validateForm(car.getVin(), name, description, dateTimeStamp)) {
                         MaintenanceEventController.createByCarId(car.getId(), newEvent, new MaintenanceEventController.MaintenanceEventListener() {
                             @Override
                             public void onEventFetched(MaintenanceEventModel event) {

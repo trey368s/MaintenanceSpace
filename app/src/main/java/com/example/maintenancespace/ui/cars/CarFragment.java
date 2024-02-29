@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.NewCarActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.controllers.users.UserController;
@@ -27,15 +28,12 @@ public class CarFragment extends Fragment {
 
     private FragmentCarBinding binding;
 
-    public static Fragment viewModelOwner;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        viewModelOwner = this;
         binding = FragmentCarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        CarViewModel viewModel = new ViewModelProvider(this).get(CarViewModel.class);
+        CarViewModel viewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
         final FragmentManager fragmentManager = getChildFragmentManager();
         FloatingActionButton addCarButton = root.findViewById(R.id.addCar);
         addCarButton.setOnClickListener(v -> {

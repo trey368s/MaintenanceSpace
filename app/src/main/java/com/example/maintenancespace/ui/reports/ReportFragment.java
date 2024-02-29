@@ -66,7 +66,7 @@ public class ReportFragment extends Fragment {
                 public void onFailure(Exception e) {
 
                 }
-            });
+            }, false);
         });
 
         return root;
