@@ -1,10 +1,6 @@
 package com.example.maintenancespace.controllers.events;
 
-import android.util.Log;
-
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
-import com.example.maintenancespace.models.events.MaintenanceEventStatus;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,6 +14,8 @@ import java.util.Map;
 
 public class MaintenanceEventController {
     private static FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private static boolean firstCarFetch = true;
+    private static boolean firstUserFetch = true;
     public interface MaintenanceEventListener {
         void onEventFetched(MaintenanceEventModel event);
         void onEventsFetched(ArrayList<MaintenanceEventModel> events);
@@ -47,13 +45,14 @@ public class MaintenanceEventController {
         firestore.collection("Car")
                 .document(carId)
                 .collection("MaintenanceEvent")
-                .get(force ? Source.SERVER : Source.DEFAULT)
+                .get(force || firstCarFetch ? Source.SERVER : Source.DEFAULT)
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     ArrayList<MaintenanceEventModel> events = new ArrayList<>();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         MaintenanceEventModel event = document.toObject(MaintenanceEventModel.class);
                         events.add(event);
                     }
+                    MaintenanceEventController.firstCarFetch = false;
                     listener.onEventsFetched(events);
                 })
                 .addOnFailureListener(e -> listener.onFailure(e));
@@ -62,12 +61,12 @@ public class MaintenanceEventController {
     public static void fetchAllByUserId(String userId, MaintenanceEventListener listener, boolean force) {
         firestore.collection("Car")
                 .whereArrayContains("userIds", userId)
-                .get(force ? Source.SERVER : Source.DEFAULT)
+                .get(force || firstUserFetch ? Source.SERVER : Source.DEFAULT)
                 .addOnSuccessListener(task -> {
                     for(DocumentSnapshot carDocument : task.getDocuments()) {
                         carDocument.getReference()
                                 .collection("MaintenanceEvent")
-                                .get(force ? Source.SERVER : Source.DEFAULT)
+                                .get(force || firstUserFetch ? Source.SERVER : Source.DEFAULT)
                                 .addOnSuccessListener(documentSnapshots -> {
                                     ArrayList<MaintenanceEventModel> events = new ArrayList<>();
                                     for(DocumentSnapshot eventDocument : documentSnapshots.getDocuments()) {
@@ -75,6 +74,7 @@ public class MaintenanceEventController {
                                         event.setId(eventDocument.getId());
                                         events.add(event);
                                     }
+                                    MaintenanceEventController.firstUserFetch = false;
                                     listener.onEventsFetched(events);
                                 })
                                 .addOnFailureListener(e -> listener.onFailure(e));
