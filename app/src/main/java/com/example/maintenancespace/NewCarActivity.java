@@ -3,25 +3,17 @@ package com.example.maintenancespace;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.maintenancespace.controllers.UserController;
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
-import com.example.maintenancespace.controllers.events.MaintenanceEventController;
 import com.example.maintenancespace.databinding.ActivityNewCarBinding;
-import com.example.maintenancespace.databinding.ActivityNewMaintenanceEventBinding;
 import com.example.maintenancespace.models.cars.CarModel;
-import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.example.maintenancespace.ui.cars.CarFragment;
-import com.example.maintenancespace.utilities.TimeHelpers;
-import com.google.firebase.Timestamp;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
