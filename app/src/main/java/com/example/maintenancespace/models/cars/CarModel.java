@@ -1,8 +1,9 @@
 package com.example.maintenancespace.models.cars;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CarModel {
+public class CarModel implements Serializable {
     private String id;
     private String vin;
     private String make;

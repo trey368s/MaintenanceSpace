@@ -31,6 +31,12 @@
         <activity android:name=".NewCarActivity"
             android:label="New Car">
         </activity>
+        <activity android:name=".EditCarActivity"
+            android:label="Edit Car">
+        </activity>
+        <activity android:name=".EditEventActivity"
+            android:label="Edit Event">
+        </activity>
         <provider
             android:authorities="com.maintenancespace.files"
             android:name="androidx.core.content.FileProvider"

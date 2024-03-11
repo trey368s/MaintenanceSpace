@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.NewCarActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.controllers.users.UserController;
@@ -20,31 +22,18 @@ import com.example.maintenancespace.models.cars.CarModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarFragment extends Fragment {
 
     private FragmentCarBinding binding;
 
-    public void addCar(CarModel car) {
-        final FragmentManager fragmentManager = getChildFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.car_layout);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        CarListItemFragment existingFragment = (CarListItemFragment) fragmentManager.findFragmentByTag(car.getId());
-        if (existingFragment == null) {
-            CarListItemFragment newEventListItem = CarListItemFragment.newInstance(car);
-            fragmentTransaction.add(R.id.car_layout, newEventListItem, car.getId());
-        }
-        fragmentTransaction.detach(fragment);
-        fragmentTransaction.attach(fragment);
-        fragmentTransaction.commitNowAllowingStateLoss();
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        NewCarActivity.updateCarFragment(this);
         binding = FragmentCarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        CarViewModel viewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
         final FragmentManager fragmentManager = getChildFragmentManager();
         FloatingActionButton addCarButton = root.findViewById(R.id.addCar);
         addCarButton.setOnClickListener(v -> {
@@ -52,50 +41,60 @@ public class CarFragment extends Fragment {
             startActivity(switchActivity);
         });
 
-        CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
+        
+        viewModel.getCars().observe(getViewLifecycleOwner(), cars -> {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            @Override
-            public void onCarFetched(CarModel car) {
-                //textView.setText("Car Details: " + car.getYear() + " " + car.getTrim() + " " + car.getMake() + " " + car.getModel());
+            for(int i = 0; i < fragmentManager.getFragments().size(); i++){
+                List<Fragment> fragments = fragmentManager.getFragments();
+                fragmentTransaction.remove(fragments.get(i));
             }
 
-            @Override
-            public void onCarsFetched(ArrayList<CarModel> cars) {
-                final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                for (CarModel car : cars) {
-                    CarListItemFragment existingFragment = (CarListItemFragment) fragmentManager.findFragmentByTag(car.getId());
-                    if (existingFragment == null) {
-                        CarListItemFragment eventFragment = CarListItemFragment.newInstance(car);
-                        fragmentTransaction.add(R.id.car_layout, eventFragment, car.getId());
-                    }
-                }
-
-                fragmentTransaction.commit();
+            if(cars != null) {
+                cars.forEach(car -> {
+                    CarListItemFragment newCarListItem = CarListItemFragment.newInstance(car);
+                    fragmentTransaction.add(R.id.car_layout, newCarListItem, car.getId());
+                });
             }
 
-            @Override
-            public void onCreation(String docId){
-                //textView.setText("Created Car ID: " + docId);
-            }
-
-            @Override
-            public void onDelete(String docId){
-                //textView.setText("Deleted Car ID: " + docId);
-            }
-
-            @Override
-            public void onUpdate(String docId){
-                //textView.setText("Updated Car ID: " + docId);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                //textView.setText("Error: " + e.getMessage());
-            }
+            fragmentTransaction.commit();
         });
 
+            CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
+
+                @Override
+                public void onCarFetched(CarModel car) {
+
+                }
+
+                @Override
+                public void onCarsFetched(ArrayList<CarModel> cars) {
+                    viewModel.setCars(cars);
+                }
+
+                @Override
+                public void onCreation(String docId){
+                    //textView.setText("Created Car ID: " + docId);
+                }
+
+                @Override
+                public void onDelete(String docId){
+                    //textView.setText("Deleted Car ID: " + docId);
+                }
+
+                @Override
+                public void onUpdate(String docId){
+                    //textView.setText("Updated Car ID: " + docId);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    //textView.setText("Error: " + e.getMessage());
+                }
+            });
+
     return root;
-}
+    }
 
     @Override
     public void onDestroyView() {
