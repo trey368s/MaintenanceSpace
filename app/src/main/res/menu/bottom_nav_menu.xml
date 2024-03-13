@@ -20,6 +20,6 @@
         android:id="@+id/navigation_gps"
         android:icon="@android:drawable/ic_dialog_map"
         android:iconTint="#000000"
-        android:title="@string/title_reports" />
+        android:title="GPS" />
 
 </menu>
