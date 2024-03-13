@@ -3,17 +3,20 @@
 
     <item
         android:id="@+id/navigation_cars"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/directions_car_24dp"
+        android:iconTint="#000000"
         android:title="@string/title_cars" />
 
     <item
         android:id="@+id/navigation_events"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/event_24dp"
+        android:iconTint="#000000"
         android:title="@string/title_events" />
 
     <item
         android:id="@+id/navigation_reports"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/description_24dp"
+        android:iconTint="#000000"
         android:title="@string/title_reports" />
 
 </menu>
