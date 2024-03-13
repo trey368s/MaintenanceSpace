@@ -11,7 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.NewMaintenanceEventActivity;
 import com.example.maintenancespace.R;
 import com.example.maintenancespace.controllers.users.UserController;
@@ -21,33 +23,42 @@ import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventFragment extends Fragment {
 
-    private FragmentEventBinding binding;
 
-    public void addEvent(MaintenanceEventModel event) {
-        final FragmentManager fragmentManager = getChildFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.eventList);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MaintenanceEventFragment newEventListItem = MaintenanceEventFragment.newInstance(event);
-        fragmentTransaction.add(R.id.eventList, newEventListItem);
-        fragmentTransaction.detach(fragment);
-        fragmentTransaction.attach(fragment);
-        fragmentTransaction.commitNowAllowingStateLoss();
-    }
+    private FragmentEventBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        NewMaintenanceEventActivity.updateEventFragment(this);
         binding = FragmentEventBinding.inflate(inflater, container, false);
+        EventViewModel viewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(EventViewModel.class);
         View root = binding.getRoot();
         final FragmentManager fragmentManager = getChildFragmentManager();
         FloatingActionButton addEventButton = root.findViewById(R.id.addMaintenanceEvent);
         addEventButton.setOnClickListener(v -> {
             Intent switchActivity = new Intent(getActivity(), NewMaintenanceEventActivity.class);
             startActivity(switchActivity);
+        });
+
+        viewModel.getEvents().observe(getViewLifecycleOwner(), events -> { // observe when the events get updated
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Start a fragment transaction
+
+            for(int i = 0; i < fragmentManager.getFragments().size(); i++){ // Remove all the fragments in the view
+                List<Fragment> fragments = fragmentManager.getFragments();
+                fragmentTransaction.remove(fragments.get(i));
+            }
+
+            if(events != null) {
+                events.forEach(event -> { // For each event in the view model add it to the eventList view
+                    MaintenanceEventFragment newEventListItem = MaintenanceEventFragment.newInstance(event);
+                    fragmentTransaction.add(R.id.eventList, newEventListItem);
+                });
+            }
+
+            fragmentTransaction.commit(); // Commit the changes.
         });
 
         if(savedInstanceState == null) {
@@ -59,14 +70,7 @@ public class EventFragment extends Fragment {
 
                 @Override
                 public void onEventsFetched(ArrayList<MaintenanceEventModel> events) {
-                    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    for (MaintenanceEventModel event : events) {
-                        MaintenanceEventFragment eventFragment = MaintenanceEventFragment.newInstance(event);
-                        fragmentTransaction.add(R.id.eventList, eventFragment);
-                    }
-
-                    fragmentTransaction.commit();
+                    viewModel.setEvents(events); // Set the events from the initial fetch
                 }
 
                 @Override
@@ -88,7 +92,7 @@ public class EventFragment extends Fragment {
                 public void onFailure(Exception e) {
 
                 }
-            });
+            }, false);
         }
 
         return root;

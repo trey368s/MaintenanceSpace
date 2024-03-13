@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.models.cars.CarModel;
@@ -22,43 +25,10 @@ public class CarSpinner extends androidx.appcompat.widget.AppCompatSpinner {
     }
 
     private void setOptions(Context context) {
-        CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
-            @Override
-            public void onCarFetched(CarModel car) {
+        CarViewModel carViewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
 
-            }
-
-            @Override
-            public void onCarsFetched(ArrayList<CarModel> cars) {
-                ArrayAdapter carOptions = new ArrayAdapter(context, android.R.layout.simple_spinner_item, cars);
-                CarSpinner.this.setAdapter(carOptions);
-            }
-
-            @Override
-            public void onDailyDistanceUpdate(String carId) {
-
-            }
-
-            @Override
-            public void onCreation(String docId) {
-
-            }
-
-            @Override
-            public void onDelete(String docId) {
-
-            }
-
-            @Override
-            public void onUpdate(String docId) {
-
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        });
+        ArrayAdapter carOptions = new ArrayAdapter(context, android.R.layout.simple_spinner_item, carViewModel.getCars().getValue());
+        CarSpinner.this.setAdapter(carOptions);
     }
 
 }

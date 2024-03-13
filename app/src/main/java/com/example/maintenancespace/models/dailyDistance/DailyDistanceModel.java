@@ -5,9 +5,11 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.utilities.TimeHelpers;
 import com.google.firebase.Timestamp;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,23 +26,6 @@ public class DailyDistanceModel implements Parcelable {
         this.dailyDistance = dailyDistance;
         this.date = date;
     }
-
-    protected DailyDistanceModel(Parcel in) {
-        dailyDistance = in.readFloat();
-        date = in.readParcelable(Timestamp.class.getClassLoader(), Timestamp.class);
-    }
-
-    public static final Creator<DailyDistanceModel> CREATOR = new Creator<DailyDistanceModel>() {
-        @Override
-        public DailyDistanceModel createFromParcel(Parcel in) {
-            return new DailyDistanceModel(in);
-        }
-
-        @Override
-        public DailyDistanceModel[] newArray(int size) {
-            return new DailyDistanceModel[size];
-        }
-    };
 
     public static float calculateAverageDistance(ArrayList<DailyDistanceModel> dailyDistanceList) {
         float averageDistance = 0;
@@ -98,14 +83,31 @@ public class DailyDistanceModel implements Parcelable {
         return distanceList;
     }
 
+    protected DailyDistanceModel(Parcel in) {
+        dailyDistance = in.readFloat();
+        date = in.readParcelable(Timestamp.class.getClassLoader(), Timestamp.class);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(dailyDistance);
+        dest.writeParcelable(date, flags);
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeFloat(dailyDistance);
-        dest.writeParcelable(date, flags);
-    }
+    public static final Creator<DailyDistanceModel> CREATOR = new Creator<DailyDistanceModel>() {
+        @Override
+        public DailyDistanceModel createFromParcel(Parcel in) {
+            return new DailyDistanceModel(in);
+        }
+
+        @Override
+        public DailyDistanceModel[] newArray(int size) {
+            return new DailyDistanceModel[size];
+        }
+    };
 }

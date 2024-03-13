@@ -16,6 +16,8 @@ import com.example.maintenancespace.MainActivity;
 import com.example.maintenancespace.controllers.cars.CarController;
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.dailyDistance.DailyDistanceModel;
+import com.example.maintenancespace.ui.cars.CarViewModel;
+import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.ui.gps.GpsViewModel;
 
 import java.util.ArrayList;
@@ -23,9 +25,10 @@ import java.util.function.Consumer;
 
 public class TripService extends Service {
     private LocationManager locationManager;
-    private String carId;
 
     private float tripDistanceInMeters = 0;
+
+    private String carId;
 
     private int PERMISSION_REQUEST_CODE = 100;
 
@@ -60,7 +63,7 @@ public class TripService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags,int startId) {
         super.onStartCommand(intent, flags, startId);
-        this.carId = intent.getStringExtra("carId");
+        this.carId = intent.getStringExtra("CAR_ID");
         gpsViewModel = new ViewModelProvider(MainActivity.activity).get(GpsViewModel.class);
 
         LocationListener locationListener = location -> {
@@ -88,55 +91,32 @@ public class TripService extends Service {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 50, locationListener);
         gpsViewModel.setIsTripServiceRunning(true);
 
-//        Toast.makeText(this, "Service", Toast.LENGTH_LONG).show();
-
         return START_STICKY;
     }
 
     public void updateCarDistance(float distanceInMeters) {
         if (distanceInMeters > 0) {
-            CarController.fetchCarById(this.carId, new CarController.CarListener() {
+            CarViewModel viewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
+            ArrayList<CarModel> cars = viewModel.getCars().getValue();
+            CarModel selectedCar = null;
+            for(int i = 0; i < cars.size(); i++) {
+                CarModel c = cars.get(i);
+                if (c.getId().equals(carId)) {
+                    selectedCar = c;
+                }
+            }
+
+            if(selectedCar == null) return;
+
+            ArrayList<DailyDistanceModel> dailyDistance = selectedCar.getDailyDistanceDays();
+            ArrayList<DailyDistanceModel> updatedDailyDistance = DailyDistanceModel.createUpdatedDailyDistance(distanceInMeters, dailyDistance);
+            selectedCar.setDailyDistanceDays(updatedDailyDistance);
+
+
+            CarController.updateDailyDistanceByCarId(selectedCar.getId(), selectedCar.getDailyDistanceDays(), new CarController.CarListener() {
                 @Override
                 public void onCarFetched(CarModel car) {
-                    ArrayList<DailyDistanceModel> dailyDistance = car.getDailyDistanceDays();
-                    ArrayList<DailyDistanceModel> updatedDailyDistance = DailyDistanceModel.createUpdatedDailyDistance(distanceInMeters, dailyDistance);
 
-                    CarController.updateDailyDistanceByCarId(TripService.this.carId, updatedDailyDistance, new CarController.CarListener() {
-                        @Override
-                        public void onCarFetched(CarModel car) {
-
-                        }
-
-                        @Override
-                        public void onCarsFetched(ArrayList<CarModel> cars) {
-
-                        }
-
-                        @Override
-                        public void onDailyDistanceUpdate(String carId) {
-
-                        }
-
-                        @Override
-                        public void onCreation(String docId) {
-
-                        }
-
-                        @Override
-                        public void onDelete(String docId) {
-
-                        }
-
-                        @Override
-                        public void onUpdate(String docId) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Exception e) {
-
-                        }
-                    });
                 }
 
                 @Override
@@ -146,7 +126,7 @@ public class TripService extends Service {
 
                 @Override
                 public void onDailyDistanceUpdate(String carId) {
-
+                    viewModel.setCars(cars);
                 }
 
                 @Override

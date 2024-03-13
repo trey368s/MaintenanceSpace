@@ -1,18 +1,21 @@
 package com.example.maintenancespace.controllers.cars;
 
+import android.util.Log;
+
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.dailyDistance.DailyDistanceModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CarController {
-
     private static FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private static boolean firstFetch = true;
 
     public interface CarListener {
         void onCarFetched(CarModel car);
@@ -40,7 +43,7 @@ public class CarController {
     public static void fetchAllCarsByUserId(String userId, CarListener listener) {
         firestore.collection("Car")
                 .whereArrayContains("userIds", userId)
-                .get()
+                .get(firstFetch ? Source.SERVER : Source.DEFAULT)
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     ArrayList<CarModel> cars = new ArrayList<>();
                     for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
@@ -48,6 +51,7 @@ public class CarController {
                         car.setId(document.getId());
                         cars.add(car);
                     }
+                    CarController.firstFetch = false;
                     listener.onCarsFetched(cars);
                 })
                 .addOnFailureListener(e -> listener.onFailure(e));
@@ -88,7 +92,7 @@ public class CarController {
         updatedData.put("year", updatedCar.getYear());
         updatedData.put("ownerId", updatedCar.getOwnerId());
         updatedData.put("userIds", updatedCar.getUserIds());
-
+        Log.d("Car ID", carId);
         firestore.collection("Car")
                 .document(carId)
                 .set(updatedData, SetOptions.merge())
@@ -102,7 +106,7 @@ public class CarController {
 
     public static void updateDailyDistanceByCarId(String carId, ArrayList<DailyDistanceModel> dailyDistance, CarController.CarListener listener) {
         Map<String, Object> updatedData = new HashMap<>();
-        updatedData.put("dailyDistance", dailyDistance);
+        updatedData.put("dailyDistanceDays", dailyDistance);
 
         firestore.collection("Car")
                 .document(carId)

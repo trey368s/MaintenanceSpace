@@ -16,12 +16,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 
+import com.example.maintenancespace.ui.cars.CarViewModel;
+import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.utilities.CsvWriter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -42,15 +45,19 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public static AppCompatActivity activity;
 
+    public static AppCompatActivity viewModelOwner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
 
+        viewModelOwner = this;
+        CarViewModel carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
+        EventViewModel eventViewModel = new ViewModelProvider(this).get(EventViewModel.class);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(

@@ -40,7 +40,7 @@ public class GpsFragment extends Fragment {
 
         startTripButton.setOnClickListener(v -> {
             CarModel selectedCar = (CarModel) carSpinner.getSelectedItem();
-            tripIntent.putExtra("carId", selectedCar.getId());
+            tripIntent.putExtra("CAR_ID", selectedCar.getId());
 
             if(!viewModel.getIsTripServiceRunning().getValue()) {
                 getActivity().startService(tripIntent);
