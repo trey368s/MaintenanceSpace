@@ -50,17 +50,25 @@ public class CarModel implements Serializable {
         return vin;
     }
 
+    public void setMake(String make) { this.make = make; }
+
     public String getMake(){
         return make;
     }
+
+    public void setModel(String model) { this.model = model; }
 
     public String getModel(){
         return model;
     }
 
+    public void setTrim(String trim) { this.trim = trim; }
+
     public String getTrim(){
         return trim;
     }
+
+    public void setYear(int year) { this.year = year; }
 
     public int getYear(){
         return year;

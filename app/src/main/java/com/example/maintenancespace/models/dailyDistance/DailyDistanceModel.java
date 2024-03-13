@@ -9,12 +9,15 @@ import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.utilities.TimeHelpers;
 import com.google.firebase.Timestamp;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class DailyDistanceModel implements Parcelable {
+public class DailyDistanceModel implements Serializable {
 
     private float dailyDistance;
     private Timestamp date;
@@ -83,31 +86,13 @@ public class DailyDistanceModel implements Parcelable {
         return distanceList;
     }
 
-    protected DailyDistanceModel(Parcel in) {
-        dailyDistance = in.readFloat();
-        date = in.readParcelable(Timestamp.class.getClassLoader(), Timestamp.class);
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.writeFloat(dailyDistance);
+        stream.writeLong(date.getSeconds());
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(dailyDistance);
-        dest.writeParcelable(date, flags);
+    private void readObject(ObjectInputStream stream) throws IOException {
+        dailyDistance = stream.readFloat();
+        date = new Timestamp(stream.readLong(), 0);
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<DailyDistanceModel> CREATOR = new Creator<DailyDistanceModel>() {
-        @Override
-        public DailyDistanceModel createFromParcel(Parcel in) {
-            return new DailyDistanceModel(in);
-        }
-
-        @Override
-        public DailyDistanceModel[] newArray(int size) {
-            return new DailyDistanceModel[size];
-        }
-    };
 }
