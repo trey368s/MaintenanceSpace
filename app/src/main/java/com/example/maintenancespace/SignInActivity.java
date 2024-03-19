@@ -41,16 +41,16 @@ public class SignInActivity extends AppCompatActivity {
         View root = binding.getRoot();
         setContentView(root);
 
-        UserController.signOut();
+        UserController.signOut(getApplicationContext());
 
         if(UserController.isUserSignedIn()) {
             startActivity(startMainActivity);
         } else {
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(UserController.CREDENTIAL_NAME, Context.MODE_PRIVATE);
             String email = sharedPref.getString(UserController.EMAIL_KEY, "");
             String password = sharedPref.getString(UserController.PASS_KEY, "");
             if(!email.equals("") && !password.equals("")) {
-                UserController.signIn(this, email, password, signInHandler);
+                UserController.signIn(getApplicationContext(), email, password, signInHandler);
             }
         }
 
@@ -59,7 +59,7 @@ public class SignInActivity extends AppCompatActivity {
         Button signInButton = root.findViewById(R.id.signInButton);
 
         signInButton.setOnClickListener(v -> {
-            UserController.signIn(this, emailField.getText().toString(), passwordField.getText().toString(), signInHandler);
+            UserController.signIn(getApplicationContext(), emailField.getText().toString(), passwordField.getText().toString(), signInHandler);
         });
     }
 }

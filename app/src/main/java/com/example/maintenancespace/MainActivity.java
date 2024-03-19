@@ -5,22 +5,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 
+import com.example.maintenancespace.controllers.users.UserController;
 import com.example.maintenancespace.ui.cars.CarViewModel;
 import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.utilities.CsvWriter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -104,6 +100,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showSettingsMenu() {
+        PopupMenu popupMenu = new PopupMenu(this, findViewById(R.id.settings));
+
+        popupMenu.getMenuInflater().inflate(R.menu.settings_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(item -> {
+            Log.d("Log out", item.toString());
+            UserController.signOut(getApplicationContext());
+            Intent signOut = new Intent(this, SignInActivity.class);
+            signOut.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(signOut);
+            return true;
+        });
+
+        popupMenu.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -121,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
                     Uri.parse("https://www.google.com/maps/search/repair+shops+near+me/"));
             startActivity(intent);
             return true;
+        } else if (id == R.id.settings) {
+            this.showSettingsMenu();
         }
 
         return super.onOptionsItemSelected(item);
