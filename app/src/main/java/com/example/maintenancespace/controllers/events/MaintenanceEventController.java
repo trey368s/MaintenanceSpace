@@ -58,15 +58,15 @@ public class MaintenanceEventController {
                 .addOnFailureListener(e -> listener.onFailure(e));
     }
 
-    public static void fetchAllByUserId(String userId, MaintenanceEventListener listener, boolean force) {
+    public static void fetchAllByUserId(String userId, MaintenanceEventListener listener) {
         firestore.collection("Car")
                 .whereArrayContains("userIds", userId)
-                .get(force || firstUserFetch ? Source.SERVER : Source.DEFAULT)
+                .get(firstUserFetch ? Source.SERVER : Source.DEFAULT)
                 .addOnSuccessListener(task -> {
                     for(DocumentSnapshot carDocument : task.getDocuments()) {
                         carDocument.getReference()
                                 .collection("MaintenanceEvent")
-                                .get(force || firstUserFetch ? Source.SERVER : Source.DEFAULT)
+                                .get(firstUserFetch ? Source.SERVER : Source.DEFAULT)
                                 .addOnSuccessListener(documentSnapshots -> {
                                     ArrayList<MaintenanceEventModel> events = new ArrayList<>();
                                     for(DocumentSnapshot eventDocument : documentSnapshots.getDocuments()) {

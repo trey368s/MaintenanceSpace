@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 
 import com.example.maintenancespace.controllers.users.UserController;
+import com.example.maintenancespace.services.NotificationService;
 import com.example.maintenancespace.ui.cars.CarViewModel;
 import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.utilities.CsvWriter;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        startService(serviceIntent);
     }
 
     @Override
