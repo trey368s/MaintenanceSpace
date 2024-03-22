@@ -59,7 +59,7 @@ public class NotificationService extends Service {
                     Timestamp eventTimestamp = event.getDate();
                     long eventTimeMillis = eventTimestamp.toDate().getTime();
                     long currentTimeMillis = System.currentTimeMillis();
-                    long timeDifferenceMillis = eventTimeMillis - currentTimeMillis;
+                    long timeDifferenceMillis = (-1)*eventTimeMillis - currentTimeMillis;
                     MaintenanceEventStatus status;
                     if(timeDifferenceMillis>0){
                         status = MaintenanceEventStatus.FUTURE;
