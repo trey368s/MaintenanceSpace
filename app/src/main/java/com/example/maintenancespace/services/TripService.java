@@ -21,6 +21,8 @@ import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.ui.gps.GpsViewModel;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class TripService extends Service {
@@ -34,6 +36,8 @@ public class TripService extends Service {
 
     private Location previousLocation = null;
     private GpsViewModel gpsViewModel;
+
+    private Timer timer;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -51,10 +55,11 @@ public class TripService extends Service {
         locManager.getCurrentLocation(LocationManager.GPS_PROVIDER, null, getApplication().getMainExecutor(), new Consumer<Location>() {
             @Override
             public void accept(Location location) {
-                TripService.this.tripDistanceInMeters += TripService.this.previousLocation.distanceTo(location);
+                setTripDistanceInMeters(getTripDistanceInMeters() + TripService.this.previousLocation.distanceTo(location));
                 TripService.this.previousLocation = location;
-                updateCarDistance(TripService.this.tripDistanceInMeters);
+                updateCarDistance(getTripDistanceInMeters());
                 gpsViewModel.setIsTripServiceRunning(false);
+                gpsViewModel.setTripDistance(0f);
             }
         });
 
@@ -69,7 +74,7 @@ public class TripService extends Service {
         LocationListener locationListener = location -> {
             if (previousLocation != null) {
                 float distance = this.previousLocation.distanceTo(location);
-                this.tripDistanceInMeters += distance;
+                setTripDistanceInMeters(getTripDistanceInMeters() + distance);
             }
             this.previousLocation = location;
         };
@@ -150,5 +155,27 @@ public class TripService extends Service {
                 }
             });
         }
+    }
+
+    private void setTripDistanceInMeters(float dist) {
+        this.tripDistanceInMeters = dist;
+        gpsViewModel.setTripDistance(dist);
+    }
+
+    private float getTripDistanceInMeters() { return this.tripDistanceInMeters; }
+
+    private void startTimer() {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gpsViewModel.setTripTimer(gpsViewModel.getTripTimer().getValue() == null ? 1L : gpsViewModel.getTripTimer().getValue() + 1L);
+            }
+        }, 1000);
+    }
+
+    private void stopTimer() {
+        timer.cancel();
+        timer.purge();
+        gpsViewModel.setTripTimer(0L);
     }
 }
