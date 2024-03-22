@@ -3,9 +3,9 @@ package com.example.maintenancespace.controllers.cars;
 import android.util.Log;
 
 import com.example.maintenancespace.models.cars.CarModel;
+import com.example.maintenancespace.models.dailyDistance.DailyDistanceModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Source;
 
@@ -20,6 +20,7 @@ public class CarController {
     public interface CarListener {
         void onCarFetched(CarModel car);
         void onCarsFetched(ArrayList<CarModel> cars);
+        void onDailyDistanceUpdate(String carId);
         void onCreation(String docId);
         void onDelete(String docId);
         void onUpdate(String docId);
@@ -103,4 +104,18 @@ public class CarController {
                 });
     }
 
+    public static void updateDailyDistanceByCarId(String carId, ArrayList<DailyDistanceModel> dailyDistance, CarController.CarListener listener) {
+        Map<String, Object> updatedData = new HashMap<>();
+        updatedData.put("dailyDistanceDays", dailyDistance);
+
+        firestore.collection("Car")
+                .document(carId)
+                .set(updatedData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    listener.onDailyDistanceUpdate(carId);
+                })
+                .addOnFailureListener(e -> {
+                    listener.onFailure(e);
+                });
+    }
 }

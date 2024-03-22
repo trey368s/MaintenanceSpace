@@ -1,5 +1,6 @@
 package com.example.maintenancespace;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.example.maintenancespace.utilities.CsvWriter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -41,12 +43,14 @@ import java.io.OutputStreamWriter;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    public static AppCompatActivity activity;
 
     public static AppCompatActivity viewModelOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
 
         viewModelOwner = this;
         CarViewModel carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_cars, R.id.navigation_events, R.id.navigation_reports)
+                R.id.navigation_cars, R.id.navigation_events, R.id.navigation_gps, R.id.navigation_reports)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

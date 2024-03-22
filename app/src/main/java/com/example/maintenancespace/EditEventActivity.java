@@ -21,6 +21,7 @@ import com.example.maintenancespace.databinding.ActivityEditEventBinding;
 import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.models.events.MaintenanceEventModel;
 import com.example.maintenancespace.ui.cars.CarListItemFragment;
+import com.example.maintenancespace.ui.cars.CarSpinner;
 import com.example.maintenancespace.ui.cars.CarViewModel;
 import com.example.maintenancespace.ui.events.EventViewModel;
 import com.example.maintenancespace.utilities.TimeHelpers;
@@ -35,10 +36,7 @@ import java.util.Objects;
 public class EditEventActivity extends AppCompatActivity {
     private ActivityEditEventBinding binding;
 
-    private boolean validateForm(String carId, String name, String description, Timestamp date) {
-        if(carId.isEmpty()) {
-            return false;
-        }
+    private boolean validateForm(String name, String description, Timestamp date) {
         if(name.isEmpty()) {
             return false;
         }
@@ -56,21 +54,12 @@ public class EditEventActivity extends AppCompatActivity {
         CarViewModel carViewModel  = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
         ConstraintLayout root = binding.getRoot();
         setContentView(root);
-        AutoCompleteTextView editVinField = root.findViewById(R.id.editVin);
         EditText editNameField = root.findViewById(R.id.editMake);
         EditText editDescription = root.findViewById(R.id.editModel);
         CalendarView editDateField = root.findViewById(R.id.editDate);
         TimePicker editTimeField = root.findViewById(R.id.editTime);
         Button saveEventButton = binding.saveEventButton;
 
-        ArrayList<CarModel> cars = carViewModel.getCars().getValue();
-        String carVin = "";
-        for (CarModel car: cars) {
-            if (car.getId().equals(existingEvent.getCarId())) {
-                carVin = car.getVin();
-            }
-        }
-        editVinField.setText(carVin);
         editNameField.setText(existingEvent.getName());
         editDescription.setText(existingEvent.getDescription());
         editDateField.setDate(existingEvent.getDate().toDate().getTime());
@@ -128,7 +117,6 @@ public class EditEventActivity extends AppCompatActivity {
         });
 
         saveEventButton.setOnClickListener(v -> {
-            String vin = editVinField.getText().toString();
             String name = editNameField.getText().toString();
             String description = editDescription.getText().toString();
             Calendar cal = Calendar.getInstance();
@@ -147,55 +135,48 @@ public class EditEventActivity extends AppCompatActivity {
             existingEvent.setDescription(description);
             existingEvent.setDate(dateTimeStamp);
 
-            ArrayList<CarModel> carList = carViewModel.getCars().getValue();
-            for(CarModel car : carList) {
-                if(Objects.equals(car.getVin(), vin.toString())) {
-                    existingEvent.setCarId(car.getId());
-                    if(validateForm(car.getVin(), name, description, dateTimeStamp)) {
-                        MaintenanceEventController.updateById(car.getId(), existingEvent.getId(), existingEvent, new MaintenanceEventController.MaintenanceEventListener() {
-                            @Override
-                            public void onEventFetched(MaintenanceEventModel event) {
+            if(validateForm(name, description, dateTimeStamp)) {
+                MaintenanceEventController.updateById(existingEvent.getId(), existingEvent.getId(), existingEvent, new MaintenanceEventController.MaintenanceEventListener() {
+                    @Override
+                    public void onEventFetched(MaintenanceEventModel event) {
 
-                            }
-
-                            @Override
-                            public void onEventsFetched(ArrayList<MaintenanceEventModel> events) {
-
-                            }
-
-                            @Override
-                            public void onCreation(String docId) {
-
-                            }
-
-                            @Override
-                            public void onDelete(String docId) {
-
-                            }
-
-                            @Override
-                            public void onUpdate(String docId) {
-                                ArrayList<MaintenanceEventModel> events = eventViewModel.getEvents().getValue();
-
-                                for (int i = 0; i < events.size(); i++) {
-                                    if(events.get(i).getId().equals(existingEvent.getId())) {
-                                        events.set(i, existingEvent);
-                                    }
-                                }
-
-                                eventViewModel.setEvents(events);
-
-                                finish(); // Call finish to end the activity
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-
-                            }
-                        });
                     }
-                    break;
-                }
+
+                    @Override
+                    public void onEventsFetched(ArrayList<MaintenanceEventModel> events) {
+
+                    }
+
+                    @Override
+                    public void onCreation(String docId) {
+
+                    }
+
+                    @Override
+                    public void onDelete(String docId) {
+
+                    }
+
+                    @Override
+                    public void onUpdate(String docId) {
+                        ArrayList<MaintenanceEventModel> events = eventViewModel.getEvents().getValue();
+
+                        for (int i = 0; i < events.size(); i++) {
+                            if(events.get(i).getId().equals(existingEvent.getId())) {
+                                events.set(i, existingEvent);
+                            }
+                        }
+
+                        eventViewModel.setEvents(events);
+
+                        finish(); // Call finish to end the activity
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
             }
         });
 
