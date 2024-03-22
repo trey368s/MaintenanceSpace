@@ -17,18 +17,16 @@ public class UserController
     final public static String EMAIL_KEY = "EMAIL";
     final public static String PASS_KEY = "PASS";
 
+    final public static String CREDENTIAL_NAME = "CREDENTIALS";
+
     private static FirebaseAuth fireAuth = FirebaseAuth.getInstance();
 
-    public static void signIn(Activity activity, String email, String password, SignInListener listener) {
+    public static void signIn(Context context, String email, String password, SignInListener listener) {
         fireAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         FirebaseUser user = fireAuth.getCurrentUser();
-                        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(EMAIL_KEY, email);
-                        editor.putString(PASS_KEY, password);
-                        editor.apply();
+                        saveLoginCredentials(context, email, password);
                         listener.onSuccess(user);
                     } else {
                         listener.onFailure(task.getException());
@@ -36,8 +34,9 @@ public class UserController
                 });
     }
 
-    public static void signOut() {
+    public static void signOut(Context context) {
         fireAuth.signOut();
+        clearLoginCredentials(context);
     }
 
     public static boolean isUserSignedIn() {
@@ -53,4 +52,18 @@ public class UserController
         return currentUser;
     }
 
+    private static void saveLoginCredentials(Context context, String email, String password) {
+        SharedPreferences sharedPref = context.getSharedPreferences(CREDENTIAL_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(EMAIL_KEY, email);
+        editor.putString(PASS_KEY, password);
+        editor.apply();
+    }
+
+    private static void clearLoginCredentials(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(CREDENTIAL_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+        editor.apply();
+    }
 }
