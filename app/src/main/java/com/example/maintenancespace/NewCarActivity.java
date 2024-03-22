@@ -81,6 +81,11 @@ public class NewCarActivity extends AppCompatActivity {
                     }
 
                     @Override
+                    public void onDailyDistanceUpdate(String carId) {
+
+                    }
+
+                    @Override
                     public void onCreation(String docId) {
                         ArrayList<CarModel> cars = carsViewModel.getCars().getValue();
                         newCar.setId(docId);

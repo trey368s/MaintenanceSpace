@@ -115,7 +115,7 @@ public class MaintenanceEventController {
         Map<String, Object> updatedData = new HashMap<>();
         updatedData.put("name", updatedEvent.getName());
         updatedData.put("description", updatedEvent.getDescription());
-        updatedData.put("mileage", updatedEvent.getMileage());
+        updatedData.put("distance", updatedEvent.getDistance());
         updatedData.put("date", updatedEvent.getDate());
         updatedData.put("status", updatedEvent.getStatus());
 

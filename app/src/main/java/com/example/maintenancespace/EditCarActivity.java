@@ -49,7 +49,7 @@ public class EditCarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         String carId = getIntent().getExtras().getString(CarListItemFragment.CAR_ID_KEY);
-        CarModel existingCar = getIntent().getExtras().getSerializable("CAR", CarModel.class);
+        CarModel existingCar = getIntent().getExtras().getParcelable("CAR", CarModel.class);
 
         binding = ActivityEditCarBinding.inflate(getLayoutInflater());
         CarViewModel carsViewModel = new ViewModelProvider(MainActivity.viewModelOwner).get(CarViewModel.class);
@@ -78,6 +78,11 @@ public class EditCarActivity extends AppCompatActivity {
 
                 @Override
                 public void onCarsFetched(ArrayList<CarModel> cars) {
+
+                }
+
+                @Override
+                public void onDailyDistanceUpdate(String carId) {
 
                 }
 
@@ -141,6 +146,11 @@ public class EditCarActivity extends AppCompatActivity {
 
                     @Override
                     public void onCarsFetched(ArrayList<CarModel> cars) {
+
+                    }
+
+                    @Override
+                    public void onDailyDistanceUpdate(String carId) {
 
                     }
 

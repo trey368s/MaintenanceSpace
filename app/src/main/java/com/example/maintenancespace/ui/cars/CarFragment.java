@@ -41,7 +41,7 @@ public class CarFragment extends Fragment {
             startActivity(switchActivity);
         });
 
-        
+
         viewModel.getCars().observe(getViewLifecycleOwner(), cars -> {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -60,40 +60,45 @@ public class CarFragment extends Fragment {
             fragmentTransaction.commit();
         });
 
-            CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
+        CarController.fetchAllCarsByUserId(UserController.getCurrentUser().getUid(), new CarController.CarListener() {
 
-                @Override
-                public void onCarFetched(CarModel car) {
+            @Override
+            public void onCarFetched(CarModel car) {
 
-                }
+            }
 
-                @Override
-                public void onCarsFetched(ArrayList<CarModel> cars) {
-                    viewModel.setCars(cars);
-                }
+            @Override
+            public void onCarsFetched(ArrayList<CarModel> cars) {
+                viewModel.setCars(cars);
+            }
 
-                @Override
-                public void onCreation(String docId){
-                    //textView.setText("Created Car ID: " + docId);
-                }
+            @Override
+            public void onDailyDistanceUpdate(String carId) {
 
-                @Override
-                public void onDelete(String docId){
-                    //textView.setText("Deleted Car ID: " + docId);
-                }
+            }
 
-                @Override
-                public void onUpdate(String docId){
-                    //textView.setText("Updated Car ID: " + docId);
-                }
+            @Override
+            public void onCreation(String docId){
+                //textView.setText("Created Car ID: " + docId);
+            }
 
-                @Override
-                public void onFailure(Exception e) {
-                    //textView.setText("Error: " + e.getMessage());
-                }
-            });
+            @Override
+            public void onDelete(String docId){
+                //textView.setText("Deleted Car ID: " + docId);
+            }
 
-    return root;
+            @Override
+            public void onUpdate(String docId){
+                //textView.setText("Updated Car ID: " + docId);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                //textView.setText("Error: " + e.getMessage());
+            }
+        });
+
+        return root;
     }
 
     @Override
