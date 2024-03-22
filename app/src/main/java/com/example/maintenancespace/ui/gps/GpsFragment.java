@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,11 @@ import com.example.maintenancespace.models.cars.CarModel;
 import com.example.maintenancespace.services.TripService;
 import com.example.maintenancespace.ui.cars.CarSpinner;
 
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class GpsFragment extends Fragment {
 
     private FragmentGpsBinding binding;
@@ -37,6 +43,21 @@ public class GpsFragment extends Fragment {
 
         final Button startTripButton = binding.buttonStartTrip;
         CarSpinner carSpinner = root.findViewById(R.id.tripCarSpinner);
+        TextView timerText = binding.tripTimerNumber;
+        TextView distanceText = binding.tripDistanceNumber;
+
+        viewModel.getTripTimer().observe(getViewLifecycleOwner(), time -> {
+            Date d = new Date(time);
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss"); // HH for 0-23
+            df.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String timeText = df.format(d);
+            timerText.setText(timeText);
+        });
+
+        viewModel.getTripDistance().observe(getViewLifecycleOwner(), distance -> {
+            float distanceInKM = distance / 1000;
+            distanceText.setText(Float.toString(distanceInKM));
+        });
 
         startTripButton.setOnClickListener(v -> {
             CarModel selectedCar = (CarModel) carSpinner.getSelectedItem();
