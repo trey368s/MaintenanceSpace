@@ -5,4 +5,5 @@ public enum MaintenanceEventStatus {
     SKIPPED,
     FUTURE,
     PAST_DUE,
+    OTHER
 }
