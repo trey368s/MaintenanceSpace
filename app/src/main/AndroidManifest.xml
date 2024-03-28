@@ -55,6 +55,9 @@
         <activity android:name=".EditEventActivity"
             android:label="Edit Event">
         </activity>
+        <activity android:name=".SignUpActivity"
+            android:label="Sign Up">
+        </activity>
         <provider
             android:authorities="com.maintenancespace.files"
             android:name="androidx.core.content.FileProvider"

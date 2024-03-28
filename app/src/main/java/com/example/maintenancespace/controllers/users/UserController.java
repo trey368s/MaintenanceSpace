@@ -1,5 +1,4 @@
 package com.example.maintenancespace.controllers.users;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -50,6 +49,16 @@ public class UserController
     public static FirebaseUser getCurrentUser() {
         FirebaseUser currentUser = fireAuth.getCurrentUser();
         return currentUser;
+    }
+
+    public static void signUp(Context context, String email, String password, SignInListener listener) {
+        fireAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                signIn(context, email, password, listener);
+            } else {
+                listener.onFailure(task.getException());
+            }
+        });
     }
 
     private static void saveLoginCredentials(Context context, String email, String password) {
