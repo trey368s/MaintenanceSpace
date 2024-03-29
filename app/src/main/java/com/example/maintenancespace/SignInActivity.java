@@ -57,9 +57,15 @@ public class SignInActivity extends AppCompatActivity {
         EditText emailField = root.findViewById(R.id.editEmail);
         EditText passwordField = root.findViewById(R.id.editPassword);
         Button signInButton = root.findViewById(R.id.signInButton);
+        Button signUpButton = binding.signUpButton;
 
         signInButton.setOnClickListener(v -> {
             UserController.signIn(getApplicationContext(), emailField.getText().toString(), passwordField.getText().toString(), signInHandler);
+        });
+
+        signUpButton.setOnClickListener(v -> {
+            Intent signUpIntent = new Intent(this, SignUpActivity.class);
+            startActivity(signUpIntent);
         });
     }
 }
